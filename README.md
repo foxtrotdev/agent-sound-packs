@@ -67,6 +67,7 @@ Five canonical events (`stop` · `notification` · `subagent` · `session` · `c
 - [Tool integrations](#tool-integrations)
 - [Event model](#event-model)
 - [Quick usage](#quick-usage)
+- [Pack management (install / update / browse)](#pack-management-install--update--browse)
 - [Adding a new pack](#adding-a-new-pack)
 - [Pack format](#pack-format)
 - [Switching packs](#switching-packs)
@@ -224,6 +225,39 @@ You get four commands that work in any terminal:
 | `sp-play <event>` | `play-random.sh <event>` |
 
 Example: `sp futurama` switches pack, `sp-test` plays all events.
+
+---
+
+## Pack management (install / update / browse)
+
+Three helper scripts manage packs from this repo or any community repo, without re-cloning anything manually.
+
+```bash
+# Browse what's available in the official registry
+~/.claude/sounds/scripts/list-remote.sh
+
+# Install a pack from the official repo
+~/.claude/sounds/scripts/add-pack.sh duke-nukem-cs
+
+# Install a pack from any community repo (just point at the git URL)
+~/.claude/sounds/scripts/add-pack.sh https://github.com/alice/my-packs.git my-pack
+
+# Re-fetch one pack from its recorded source
+~/.claude/sounds/scripts/update-pack.sh duke-nukem-cs
+
+# Update every installed pack (and tell you which ones have new commits)
+~/.claude/sounds/scripts/update-pack.sh --all
+
+# Dry-run: check which packs are behind upstream without touching anything
+~/.claude/sounds/scripts/update-pack.sh --check
+```
+
+Under the hood:
+- Uses `git sparse-checkout` to download only the requested `packs/<name>/` subdirectory — full repo never lands on disk.
+- Writes `.source` inside each installed pack recording `repo`, commit `sha`, and `fetched_at`. `update-pack.sh` reads that to know where to refresh from.
+- `list-remote.sh` reads [`packs.json`](packs.json) from the official repo for metadata (name, language, voice/sfx, wav count, description).
+
+> Publishing your own pack? Put it at `packs/<name>/` in any git repo and anyone can install it with one command. Optional: add an entry to your own `packs.json` so `list-remote.sh`-style tools work against your registry.
 
 ---
 
