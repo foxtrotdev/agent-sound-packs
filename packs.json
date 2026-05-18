@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "registry": "https://github.com/foxtrotdev/agent-sound-packs",
+  "raw_base": "https://raw.githubusercontent.com/foxtrotdev/agent-sound-packs/main",
+  "packs": [
+    {
+      "name": "ace-ventura",
+      "description": "Jim Carrey one-liners (Pet Detective).",
+      "language": "en",
+      "voice": true,
+      "tags": ["movies", "comedy"],
+      "wav_count": 54
+    },
+    {
+      "name": "commander-keen",
+      "description": "Retro Apogee game vox.",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "retro"],
+      "wav_count": 53
+    },
+    {
+      "name": "dbz",
+      "description": "Dragon Ball Z shouts, kamehameha, screams.",
+      "language": "en",
+      "voice": true,
+      "tags": ["anime", "shouts"],
+      "wav_count": 52
+    },
+    {
+      "name": "duke-nukem-cs",
+      "description": "Duke Nukem quotes (\"Let's rock\", \"Hail to the king\").",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fps", "quotes"],
+      "wav_count": 9
+    },
+    {
+      "name": "futurama",
+      "description": "Bender, Fry, Leela lines.",
+      "language": "en",
+      "voice": true,
+      "tags": ["cartoons"],
+      "wav_count": 52
+    },
+    {
+      "name": "hostage-voice-cs",
+      "description": "Counter-Strike 1.6 hostage voice lines — wide pool across all 5 events.",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fps", "voice"],
+      "wav_count": 129
+    },
+    {
+      "name": "looney-tunes",
+      "description": "Classic Warner Bros cartoon clips.",
+      "language": "en",
+      "voice": true,
+      "tags": ["cartoons", "comedy"],
+      "wav_count": 57
+    },
+    {
+      "name": "modern-warfare-cs",
+      "description": "Call of Duty: Modern Warfare killstreak announcer (\"Standing by\", \"Incoming\").",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fps", "announcer"],
+      "wav_count": 35
+    },
+    {
+      "name": "mortal-kombat",
+      "description": "MK announcer + Scorpion (\"Get over here!\", \"Flawless Victory!\").",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fighting", "announcer"],
+      "wav_count": 52
+    },
+    {
+      "name": "pinky-and-the-brain",
+      "description": "Pinky and The Brain — \"What we do every night, Pinky\".",
+      "language": "en",
+      "voice": true,
+      "tags": ["cartoons"],
+      "wav_count": 52
+    },
+    {
+      "name": "the-simpsons",
+      "description": "Homer / Bart / Marge — d'oh, whoo-hoo, ha-ha.",
+      "language": "en",
+      "voice": true,
+      "tags": ["cartoons", "comedy"],
+      "wav_count": 52
+    }
+  ]
+}
