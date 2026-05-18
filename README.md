@@ -141,13 +141,67 @@ Intentionally **unmapped** across all tools:
 
 ## Adding a new pack
 
-1. `mkdir -p ~/.claude/sounds/packs/<your-pack>/`
-2. Drop kebab-case lowercase `.wav` files into it.
-3. Write a `pool.conf` (see [Pack format](#pack-format)).
-4. (Optional) Run `scripts/transcribe.sh` to generate `transcripts.txt`.
-5. `~/.claude/sounds/switch-pack.sh <your-pack>`
+The 60-second version:
 
-Pack filenames don't need to match across packs — `pool.conf` references whatever wavs you supply.
+```bash
+# 1. Scaffold the pack folder + pool.conf template
+~/.claude/sounds/scripts/new-pack.sh my-pack
+
+# 2. Drop your .wav files into the new folder
+cp ~/Downloads/my-sounds/*.wav ~/.claude/sounds/packs/my-pack/
+
+# 3. Edit pool.conf — list filenames under each event
+open ~/.claude/sounds/packs/my-pack/pool.conf       # opens in default editor
+
+# 4. Activate the pack (plays a 'stop' sound to confirm)
+~/.claude/sounds/switch-pack.sh my-pack
+
+# 5. (Optional) Test all events
+~/.claude/sounds/scripts/test-sounds.sh
+```
+
+### Walked-through example
+
+Say you have three wav clips: `done.wav`, `hey.wav`, `oops.wav`. After step 1, your `pool.conf` looks like this — edit it to:
+
+```bash
+POOL_STOP=(
+  done.wav
+)
+
+POOL_NOTIFICATION=(
+  hey.wav
+)
+
+POOL_SUBAGENT=(
+  # leave empty — no sound for subagent events
+)
+
+POOL_SESSION=(
+  hey.wav
+)
+
+POOL_COMPACT=(
+  oops.wav
+)
+```
+
+That's it. Each event picks a random clip from its list. Empty list = silence for that event. Same clip can be listed under multiple events.
+
+### Tips for picking sounds
+
+- **Short is better.** 1–3 second clips. Long sounds delay your workflow.
+- **Match the mood to the event.** Victory clips for `stop`, attention-getters for `notification`, sad / mocking for `compact`.
+- **Multiple clips per event = variety.** Add 5–8 different "task done" sounds and you won't get bored.
+- **Don't fill in events you don't care about.** Empty pool = silent. Many users only wire up `stop` + `notification`.
+
+### Filename convention
+
+- Lowercase, kebab-case for multi-word names (`task-done.wav`, not `TaskDone.wav` or `task_done.wav`).
+- Names should describe what the clip actually says or sounds like — easier to curate `pool.conf` six months later.
+- No spaces, no special characters except `-`.
+
+Pack filenames are local to the pack — they don't need to match any other pack.
 
 ---
 
