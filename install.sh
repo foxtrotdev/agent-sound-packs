@@ -28,6 +28,10 @@ cp "$SRC_DIR/scripts/play-random.sh" "$DEST/play-random.sh"
 cp "$SRC_DIR/scripts/switch-pack.sh" "$DEST/switch-pack.sh"
 cp "$SRC_DIR/scripts/transcribe.sh"  "$DEST/scripts/transcribe.sh"
 [ -f "$SRC_DIR/scripts/test-sounds.sh" ] && cp "$SRC_DIR/scripts/test-sounds.sh" "$DEST/scripts/test-sounds.sh"
+# Pack management (add / update / list-remote)
+for s in add-pack.sh update-pack.sh list-remote.sh; do
+  [ -f "$SRC_DIR/scripts/$s" ] && cp "$SRC_DIR/scripts/$s" "$DEST/scripts/$s"
+done
 chmod +x "$DEST/play-random.sh" "$DEST/switch-pack.sh" "$DEST"/scripts/*.sh
 
 # Pack definitions + bundled wavs
@@ -80,4 +84,7 @@ echo "  1) Test playback:  $DEST/scripts/test-sounds.sh"
 echo "  2) Merge hooks into ~/.claude/settings.json:"
 echo "       jq -s '.[0] * .[1]' ~/.claude/settings.json $HOOKS_FILE > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json"
 echo "     Or copy/paste the contents of $HOOKS_FILE manually."
-echo "  3) Switch packs:   $DEST/switch-pack.sh <pack-name>"
+echo "  3) Switch packs:        $DEST/switch-pack.sh <pack-name>"
+echo "  4) Browse remote packs: $DEST/scripts/list-remote.sh"
+echo "  5) Install a pack:      $DEST/scripts/add-pack.sh <name>"
+echo "  6) Update packs:        $DEST/scripts/update-pack.sh --all"
