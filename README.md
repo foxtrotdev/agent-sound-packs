@@ -276,6 +276,28 @@ Replace `duke-nukem-cs` with any name from the list above. The pack lands in `~/
 ```
 The URL is the git repo, the second word is the pack folder name inside it.
 
+The repo must contain the pack at `packs/<name>/` and follow this shape:
+
+```
+packs/
+└── stranger-things/
+    ├── pool.conf          ← required: maps events to wav files
+    ├── transcripts.txt    ← optional: what each clip says
+    ├── eleven-1.wav
+    ├── eleven-2.wav
+    ├── upside-down.wav
+    └── … more *.wav / *.mp3 / *.ogg / *.flac files
+```
+
+**Safety:** every community pack is validated *before* it's copied into your `~/.claude/sounds/packs/`. The installer rejects packs that contain:
+
+- Subdirectories, symlinks, or any file other than audio + `pool.conf` + `transcripts.txt`
+- Any `pool.conf` that uses shell metacharacters (`` ` ``, `$(...)`, `|`, `;`, `>`, `<`, etc.) — the player **never** `source`s `pool.conf`, only parses it as text
+- Files larger than 5 MiB each, or packs larger than 200 MiB total
+- Pack names containing slashes, spaces, or anything other than letters/digits/`_`/`-`
+
+Full spec for pack authors: [`PACK_RULES.md`](PACK_RULES.md). Run `~/.claude/sounds/scripts/validate-pack.sh path/to/pack` to check a pack against every rule before publishing.
+
 ### Update packs
 
 ```bash
@@ -295,9 +317,11 @@ The URL is the git repo, the second word is the pack folder name inside it.
 <summary>How it works (skip unless curious)</summary>
 
 - Uses `git sparse-checkout` so only the requested `packs/<name>/` folder is downloaded — never the full repo.
+- After download, `scripts/validate-pack.sh` checks the pack against [`PACK_RULES.md`](PACK_RULES.md): flat layout, allowed extensions only, no symlinks, size caps, strict `pool.conf` grammar (no shell metacharacters). A pack that fails is deleted; nothing lands in `~/.claude/sounds/packs/`.
 - Each installed pack carries a `.source` file with the repo URL, commit SHA, and install timestamp. `update-pack.sh` reads it to know where to re-fetch from.
+- `play-random.sh` **never** `source`s `pool.conf` — it parses it as plain text, extracting only safe basenames. Even if a pack slipped past the validator, malicious code in `pool.conf` would not execute.
 - `list-remote.sh` reads [`packs.json`](packs.json) from raw.githubusercontent.com (no GitHub login needed).
-- Publishing your own packs? Put them at `packs/<name>/` in any public git repo. Anyone installs them with `add-pack.sh <your-git-url> <name>`. Optional: ship your own `packs.json` for catalog browsing.
+- Publishing your own packs? Put them at `packs/<name>/` in any public git repo, make sure `validate-pack.sh` is happy with it, then tell users `add-pack.sh <your-git-url> <name>`. Optional: ship your own `packs.json` for catalog browsing.
 </details>
 
 ---

@@ -37,13 +37,33 @@ done
 A1="${ARGS[0]}"
 A2="${ARGS[1]:-}"
 
-if [[ "$A1" =~ ^(https?://|git@|file://|ssh://|git://) ]]; then
+# --- Safety: classify A1 as repo URL or bare pack name ----------------------
+URL_RE='^(https?://|ssh://|git://|git@[A-Za-z0-9._-]+:|file://)'
+if [[ "$A1" =~ $URL_RE ]]; then
   REPO="$A1"
   NAME="$A2"
-  [ -n "$NAME" ] || { echo "Pack name required as 2nd arg when using a custom repo URL" >&2; exit 1; }
+  [ -n "$NAME" ] || { echo "ERROR: pack name required as 2nd arg when using a custom repo URL." >&2; exit 1; }
 else
   REPO="$OFFICIAL_REPO"
   NAME="$A1"
+fi
+
+# --- Safety: validate the URL (must be a recognizable git URL) --------------
+if ! [[ "$REPO" =~ $URL_RE ]]; then
+  echo "ERROR: '$REPO' does not look like a git URL (https://, ssh://, git@host:, file://)." >&2
+  exit 1
+fi
+# Reject obvious shell injection in URL even if regex would not match. Belt + braces.
+case "$REPO" in
+  *' '*|*';'*|*'|'*|*'&'*|*'>'*|*'<'*|*'`'*|*'$'*)
+    echo "ERROR: URL contains shell metacharacters; refusing." >&2; exit 1 ;;
+esac
+
+# --- Safety: validate pack name (no path traversal, no shell chars) ---------
+if ! [[ "$NAME" =~ ^[a-zA-Z0-9_-]{1,64}$ ]]; then
+  echo "ERROR: pack name must match ^[a-zA-Z0-9_-]{1,64}\$ (got: '$NAME')." >&2
+  echo "       This protects against path traversal and shell injection." >&2
+  exit 1
 fi
 
 DEST="$PACKS_DIR/$NAME"
@@ -53,7 +73,7 @@ if [ -d "$DEST" ] && [ "$FORCE" != 1 ]; then
   exit 1
 fi
 
-command -v git >/dev/null 2>&1 || { echo "git is required" >&2; exit 1; }
+command -v git >/dev/null 2>&1 || { echo "ERROR: git is required (not found in PATH)." >&2; exit 1; }
 
 TMP=$(mktemp -d -t addpack-XXXXXX)
 trap 'rm -rf "$TMP"' EXIT
@@ -68,6 +88,22 @@ if [ ! -d "$TMP/packs/$NAME" ]; then
   echo "ERROR: pack '$NAME' does not exist in $REPO (looked for packs/$NAME/)." >&2
   echo "Run list-remote.sh to see available pack names." >&2
   exit 1
+fi
+
+# --- Safety: run validate-pack.sh BEFORE copying anything into $PACKS_DIR ---
+VALIDATOR="$(dirname "$0")/validate-pack.sh"
+[ -x "$VALIDATOR" ] || VALIDATOR="$ROOT/scripts/validate-pack.sh"
+if [ -x "$VALIDATOR" ]; then
+  echo "Validating pack structure ..."
+  if ! "$VALIDATOR" "$TMP/packs/$NAME"; then
+    echo "" >&2
+    echo "ERROR: pack failed safety validation — refusing to install." >&2
+    echo "       The downloaded pack violates PACK_RULES.md (run validate-pack.sh on a clean copy" >&2
+    echo "       to see the full list, or file an issue with the pack author)." >&2
+    exit 1
+  fi
+else
+  echo "WARN: validate-pack.sh not found alongside add-pack.sh — installing without safety check." >&2
 fi
 
 # Resolve commit SHA for provenance
