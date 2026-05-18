@@ -1,0 +1,35 @@
+air_enemy.wav	Enemy air strike incoming.
+air_friend.wav	Friendly air strike inbound.
+air_give.wav	Air strike standing by.
+carepackage_enemy.wav	Enemy care package incoming.
+carepackage_friend.wav	Get backage on the way.
+carepackage_give.wav	Care package waiting for your mark. Repeat, care package waiting for your mark.
+counter_enemy.wav	The enemy is jamming on radar!
+counter_friend.wav	Counter your wayvee up, they're blind!
+counter_give.wav	Counter UAV standing by. Repeat. Counter UAV standing by.
+emp_effect.wav	[Gunshot]
+emp_enemy.wav	Weep at ENP! Electronics are down!
+emp_friend.wav	The enemy is the MP, their electronics are off wide!
+emp_give.wav	EMP ready for launch.
+firemw.wav	(gunfire)
+jet_fly1.wav	*Growling* *Growling* *Growling*
+levelup.wav	*laughs* *laughs* *gunshot*
+nuke_enemy.wav	Enemy, no get it coming! We're done!
+nuke_friend.wav	I have to go nuke incoming!
+nuke_give.wav	Tactical nuke ready. Turn the key.
+plant.wav	[BLANK_AUDIO]
+predator_enemy.wav	Enemy predator missile incoming.
+predator_friend.wav	friendly predator missile incoming.
+predator_give.wav	Predator missile ready for launch. Repeat. Predator missile ready for launch.
+select.wav	(bell rings)
+sentrygun_enemy.wav	Enemy sentry gun incoming!
+sentrygun_friend.wav	Sentry gone on the way.
+sentrygun_give.wav	Sentry gun ready for deployment. Repeat, Sentry gun is ready for deployment.
+sentrygun_gone.wav	Your citric on is gone!
+sentrygun_starts.wav	*Gunshot*
+sentrygun_stops.wav	[APPLAUSE]
+start.wav	They can all prisoner scoff at.
+start2.wav	Let's do this.
+uav_enemy.wav	heads up enemy UAV spotted
+uav_friend.wav	UAV online.
+uav_give.wav	UAV Recon standing by.
