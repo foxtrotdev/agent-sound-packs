@@ -1,0 +1,9 @@
+du_egopowerup.wav	Ah, much better.
+du_gunsdontkillmutants.wav	Guns don't kill mutants. I kill mutants.
+du_itsclobberingtime.wav	It's clobber in time.
+du_kickyourass.wav	I'm not gonna fight you. I'm gonna kick your ass.
+du_kill_mutant1.wav	Let's rock!
+du_respawn1.wav	Hmm, so there is life after death.
+du_respawn2.wav	I could do this all day.
+du_respawn4.wav	Now I'm really pissed off.
+du_whowantstodance.wav	So who wants to dance?
