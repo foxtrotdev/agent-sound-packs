@@ -122,6 +122,8 @@ Intentionally **unmapped** across all tools:
 
 ## Quick usage
 
+### From the shell
+
 ```bash
 # Show active pack + list available
 ~/.claude/sounds/switch-pack.sh
@@ -136,6 +138,19 @@ Intentionally **unmapped** across all tools:
 # Play one sound from each event pool (sanity check)
 ~/.claude/sounds/scripts/test-sounds.sh
 ```
+
+### From Claude Code (slash commands)
+
+Copy the files in [`examples/commands/`](examples/commands/) to `~/.claude/commands/` (no restart needed) and you get:
+
+| Command | What it does |
+|---------|--------------|
+| `/sound-pack` | List packs + show active |
+| `/sound-pack <name>` | Switch to pack `<name>` |
+| `/sound-test` | Play one clip from each event pool of active pack |
+| `/sound-new <name>` | Scaffold a new pack folder with a `pool.conf` template |
+
+The slash commands are thin wrappers that invoke the shell scripts above.
 
 ---
 
