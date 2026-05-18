@@ -16,13 +16,27 @@ Deliberately not mapped: `PreToolUse`, `PostToolUse`, `UserPromptSubmit` (spam-p
 
 ## Install
 
-1. Run the project installer:
+1. Run the project installer (copies scripts, configs, and bundled `.wav` files):
    ```bash
    ./install.sh
    ```
-2. Open `~/.claude/settings.json` and merge the `hooks` block from `examples/settings.json`. Replace `YOUR_USER` with your macOS username.
-3. (Optional) Drop your `.wav` files into `~/.claude/sounds/packs/<pack-name>/`.
-4. Restart not required — Claude Code re-reads `settings.json` on each event fire.
+   The installer writes `~/.claude/sounds/suggested-hooks.json` with **your real install path already baked in** — no `YOUR_USER` placeholder to edit.
+
+2. Merge the hooks into `~/.claude/settings.json`:
+   ```bash
+   # If you have jq:
+   jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
+     > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
+
+   # If settings.json doesn't exist yet:
+   cp ~/.claude/sounds/suggested-hooks.json ~/.claude/settings.json
+
+   # Or manually paste the "hooks" block from suggested-hooks.json.
+   ```
+
+3. (Optional) Drop more `.wav` files into `~/.claude/sounds/packs/<pack-name>/`.
+
+4. No restart needed — Claude Code re-reads `settings.json` on each event fire.
 
 ## Verifying
 
@@ -42,4 +56,5 @@ If Claude Code is running, the next reply ends with a `stop` sound. If you grant
 ## Notes
 
 - Claude Code passes no event payload to the hook command — it just runs the configured shell command. The five hook events are distinguished by their **JSON key in `settings.json`**, not by an env var or argument the script reads.
-- The `&` at the end of the afplay invocation is important — hooks should return fast, and afplay otherwise blocks until playback ends.
+- `play-random.sh` auto-detects the audio player (`afplay` / `pw-play` / `paplay` / `aplay` / `ffplay` / `powershell.exe`) so the same hook config works on macOS, Linux, and WSL. Override with `CCSP_PLAYER="my-tool"`.
+- The trailing `&` on the player invocation is important — hooks should return fast, and most players block until playback ends.

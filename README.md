@@ -6,9 +6,9 @@
 
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <img alt="Platform: macOS" src="https://img.shields.io/badge/platform-macOS-lightgrey.svg">
+  <img alt="Platform: macOS / Linux / WSL" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-lightgrey.svg">
   <img alt="Shell: Bash" src="https://img.shields.io/badge/shell-bash-4EAA25.svg?logo=gnu-bash&logoColor=white">
-  <img alt="Audio: afplay" src="https://img.shields.io/badge/audio-afplay-orange.svg">
+  <img alt="Audio: auto-detect" src="https://img.shields.io/badge/audio-afplay%20%7C%20pw--play%20%7C%20paplay%20%7C%20aplay%20%7C%20ffplay-orange.svg">
   <img alt="Packs: 11" src="https://img.shields.io/badge/packs-11-success.svg">
   <a href="https://claude.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-D97757.svg"></a>
   <a href="https://github.com/openai/codex"><img alt="Codex CLI" src="https://img.shields.io/badge/Codex_CLI-supported-10A37F.svg"></a>
@@ -23,6 +23,26 @@
 <p align="center">
   Works with <a href="https://claude.com/claude-code">Claude Code</a> · <a href="https://github.com/openai/codex">Codex CLI</a> · <a href="https://github.com/Aider-AI/aider">Aider</a> · any agent CLI with a post-turn hook.
 </p>
+
+---
+
+## Quickstart (60 s, macOS / Linux / WSL)
+
+```bash
+git clone https://github.com/foxtrotdev/agent-sound-packs.git
+cd agent-sound-packs
+./install.sh                                  # copies scripts + pool.conf + bundled wavs
+~/.claude/sounds/scripts/test-sounds.sh       # confirm playback works on your OS
+~/.claude/sounds/switch-pack.sh mortal-kombat # pick a pack
+
+# Wire it into Claude Code (one-liner if you have jq):
+jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
+  > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
+```
+
+That's it. Next Claude Code reply ends with a sound. No restart needed.
+
+Other agents → [`docs/codex.md`](docs/codex.md) · [`docs/other-tools.md`](docs/other-tools.md).
 
 ---
 
@@ -75,7 +95,8 @@ Five canonical events (`stop` · `notification` · `subagent` · `session` · `c
 
 ## Requirements
 
-- macOS (uses `afplay`). Linux/Windows ports straightforward — see [Adapting the player](#adapting-the-player).
+- **macOS, Linux, or WSL/Windows.** The player auto-detects the first available of: `afplay` (macOS), `pw-play` (PipeWire), `paplay` (PulseAudio), `aplay` (ALSA), `ffplay` (ffmpeg), `powershell.exe` (WSL → Windows host). Set `CCSP_PLAYER="my-tool"` to override.
+- Bash 3.2+ (works on stock macOS bash and any modern Linux).
 - At least one supported coding-agent CLI installed.
 - Optional: [whisper.cpp](https://github.com/ggerganov/whisper.cpp) for the transcribe helper.
 
@@ -93,13 +114,21 @@ The installer:
 
 1. Copies `play-random.sh` and `switch-pack.sh` to `$CCSP_ROOT` (default `~/.claude/sounds`).
 2. Copies `transcribe.sh`, `test-sounds.sh`, and integration adapters to `$CCSP_ROOT/scripts/`.
-3. Copies pack definitions (`pool.conf`, `transcripts.txt`) into `$CCSP_ROOT/packs/<name>/`.
-4. Initializes `$CCSP_ROOT/active-pack` to the first pack found.
-5. **Does NOT** touch any tool's config file — wiring up hooks is per-tool and per-user. See [Tool integrations](#tool-integrations).
+3. Copies pack definitions (`pool.conf`, `transcripts.txt`) **and bundled `.wav` files** into `$CCSP_ROOT/packs/<name>/`. Re-run with `--no-wavs` to refresh configs only.
+4. Initializes `$CCSP_ROOT/active-pack` (defaults to `mortal-kombat` when present).
+5. Writes `$CCSP_ROOT/suggested-hooks.json` — a ready-to-paste hooks block with your real install path already substituted in.
+6. **Does NOT** touch any tool's config file — wiring hooks is per-tool and per-user. See [Tool integrations](#tool-integrations).
 
 > The default install root is `~/.claude/sounds/` for historical reasons. Override with `CCSP_ROOT=/your/path ./install.sh` if you prefer an XDG-style location.
 
-After install, drop `.wav` files into `$CCSP_ROOT/packs/<pack>/`, then follow the integration guide for your tool.
+To wire hooks into Claude Code in one shot:
+
+```bash
+jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
+  > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
+```
+
+If your `~/.claude/settings.json` doesn't exist yet, just copy `~/.claude/sounds/suggested-hooks.json` to it.
 
 ---
 
@@ -373,16 +402,18 @@ afplay packs/<pack>/<picked>.wav &
 
 ## Adapting the player
 
-Replace the final line of `play-random.sh` for non-macOS platforms:
+`play-random.sh` **auto-detects** the player at runtime — no edits required on a standard macOS, Linux, or WSL setup. Detection order:
 
-| Platform | Replacement |
-|----------|-------------|
-| Linux (PulseAudio) | `paplay "$DIR/$pick" &` |
-| Linux (ALSA) | `aplay "$DIR/$pick" &` |
-| Linux (PipeWire) | `pw-play "$DIR/$pick" &` |
-| Windows | Run via WSL with one of the Linux options, or rewrite as PowerShell calling `[System.Media.SoundPlayer]` |
+| Order | Tool | Installed by default on |
+|------:|------|-------------------------|
+| 1 | `afplay` | macOS |
+| 2 | `pw-play` | Linux distros with PipeWire |
+| 3 | `paplay` | Linux distros with PulseAudio |
+| 4 | `aplay` | Linux distros with ALSA |
+| 5 | `ffplay` | Any platform that has [ffmpeg](https://ffmpeg.org) — universal fallback |
+| 6 | `powershell.exe` | WSL → uses Windows host's `Media.SoundPlayer` |
 
-Pool format and folder layout stay identical.
+Override with `CCSP_PLAYER="mpv --really-quiet"` (or any command that takes a file path as the last argument). Pool format and folder layout stay identical across platforms.
 
 ---
 
