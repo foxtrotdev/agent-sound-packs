@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # install.sh — Install agent-sound-packs into ~/.claude/sounds/ (or $CCSP_ROOT).
 # Copies scripts, pool.conf, transcripts.txt, and any *.wav bundled in the repo.
 # Does NOT patch settings.json automatically — prints suggested hook config.

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # test-sounds.sh — Play one random sound from each event pool of the active pack.
 # Useful for verifying installation and pack curation.
 

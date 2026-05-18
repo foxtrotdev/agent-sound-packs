@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # aliases.sh — Source from your shell rc to get sound-pack CLI shortcuts
 # that work regardless of which AI agent you're using.
 #
