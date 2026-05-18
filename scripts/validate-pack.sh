@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # validate-pack.sh — Check a sound pack directory against the strict format rules.
 #
 # Usage: validate-pack.sh <pack-dir>
@@ -88,7 +88,8 @@ fi
 ENTRY_RE='[a-zA-Z0-9._-]+\.(wav|mp3|ogg|flac)'
 
 if [ -f "$DIR/pool.conf" ]; then
-  conf=$(cat "$DIR/pool.conf")
+  # Strip CR so files edited on Windows (CRLF) parse identically to LF.
+  conf=$(tr -d '\r' < "$DIR/pool.conf")
 
   # Collect referenced filenames first (used to confirm they exist on disk).
   while read -r fname; do
@@ -118,7 +119,7 @@ if [ -f "$DIR/pool.conf" ]; then
   fi
 
   # Catch dangerous tokens in NON-comment lines only (comments may freely mention them).
-  conf_nocomments=$(sed -E 's/#.*$//' "$DIR/pool.conf")
+  conf_nocomments=$(tr -d '\r' < "$DIR/pool.conf" | sed -E 's/#.*$//')
   if printf '%s' "$conf_nocomments" | grep -qE '\$\(|`|\$\{|\|\||&&|;|>|<|\beval\b|\bsource\b'; then
     err "pool.conf — contains shell metacharacters outside comments (\$(...), backticks, |, &&, ;, >, <) — not allowed"
   fi

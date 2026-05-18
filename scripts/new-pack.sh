@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # new-pack.sh — Scaffold a new sound pack.
 # Creates packs/<name>/ with an empty pool.conf template ready to fill in.
 #

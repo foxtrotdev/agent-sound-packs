@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # play-random.sh — Pick a random sound from the active pack's event pool and play it.
 #
 # Usage: play-random.sh <event>
@@ -27,7 +27,7 @@ esac
 # Safe parser: extract one POOL_<EVENT>=( ... ) block, take only safe basenames.
 # Awk reads the file byte-stream, flips a flag on the opening line, captures
 # entries until the closing ')'. Never invokes shell.
-pool=$(awk -v want="POOL_${EVENT}=(" '
+pool=$(tr -d '\r' < "$CONF" | awk -v want="POOL_${EVENT}=(" '
   BEGIN { in_block = 0 }
   {
     line = $0
@@ -47,7 +47,7 @@ pool=$(awk -v want="POOL_${EVENT}=(" '
     }
     print line
   }
-' "$CONF" \
+' \
   | tr ' \t' '\n\n' \
   | grep -E '^[a-zA-Z0-9._-]+\.(wav|mp3|ogg|flac)$' \
   || true)

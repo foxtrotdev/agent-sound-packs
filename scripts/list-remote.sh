@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # list-remote.sh — Show every pack you can install from the official catalog.
 #
 # Just run it:

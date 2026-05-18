@@ -30,6 +30,8 @@
 
 Open a terminal and run these in order. Works on macOS, Linux, and WSL.
 
+> **WSL users:** install inside the WSL filesystem (default: `~/.claude/sounds`). Do not install onto `/mnt/c/...` — drvfs strips the executable bit on shell scripts, so hooks will fail silently. Editing `pool.conf` in a Windows editor (Notepad / VS Code) is fine — the parser strips CRLF automatically.
+
 ```bash
 # 1. Download the project
 git clone https://github.com/foxtrotdev/agent-sound-packs.git

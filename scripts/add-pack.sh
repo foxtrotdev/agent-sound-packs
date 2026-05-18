@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # add-pack.sh — Download a sound pack and install it on this machine.
 #
 # Easiest:
