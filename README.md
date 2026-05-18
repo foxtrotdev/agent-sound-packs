@@ -17,9 +17,9 @@
 
 ## In one breath
 
-Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Two example packs included (Mortal Kombat, Futurama); add your own in 30 seconds.
+Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Three example packs included (Mortal Kombat, Futurama, Ace Ventura); add your own in 30 seconds.
 
-> This repository bundles short third-party audio samples (Mortal Kombat, Futurama) as illustrative example packs. Samples are very short (~1-3 seconds), used as functional UI feedback, attributed to their original creators. If you fork this repo for public redistribution, consider swapping in audio you own or have a license to redistribute.
+> This repository bundles short third-party audio samples as illustrative example packs. Samples are very short (~1-3 seconds), used as functional UI feedback, attributed to their original creators. If you fork this repo for public redistribution, consider swapping in audio you own or have a license to redistribute.
 
 ---
 
