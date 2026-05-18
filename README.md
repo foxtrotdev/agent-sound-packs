@@ -5,6 +5,17 @@
 <h1 align="center">agent-sound-packs</h1>
 
 <p align="center">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <img alt="Platform: macOS" src="https://img.shields.io/badge/platform-macOS-lightgrey.svg">
+  <img alt="Shell: Bash" src="https://img.shields.io/badge/shell-bash-4EAA25.svg?logo=gnu-bash&logoColor=white">
+  <img alt="Audio: afplay" src="https://img.shields.io/badge/audio-afplay-orange.svg">
+  <img alt="Packs: 11" src="https://img.shields.io/badge/packs-11-success.svg">
+  <a href="https://claude.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-D97757.svg"></a>
+  <a href="https://github.com/openai/codex"><img alt="Codex CLI" src="https://img.shields.io/badge/Codex_CLI-supported-10A37F.svg"></a>
+  <a href="https://github.com/Aider-AI/aider"><img alt="Aider" src="https://img.shields.io/badge/Aider-supported-7C3AED.svg"></a>
+</p>
+
+<p align="center">
   <strong>Your AI coding agent talks back.</strong><br>
   Themed sound packs that play short clips when your agent finishes a task, needs input, or hits other lifecycle events. Drop in any folder of <code>.wav</code> files, map each event to its own sound pool, switch themes in one command.
 </p>
@@ -17,7 +28,7 @@
 
 ## In one breath
 
-Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Eight example packs included (Mortal Kombat, Futurama, Ace Ventura, Commander Keen, DBZ, Looney Tunes, Pinky and The Brain, The Simpsons); add your own in 30 seconds.
+Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Eleven example packs included (Mortal Kombat, Futurama, Ace Ventura, Commander Keen, DBZ, Looney Tunes, Pinky and The Brain, The Simpsons, Duke Nukem, CS Hostage, CoD Modern Warfare); add your own in 30 seconds.
 
 > This repository bundles short third-party audio samples as illustrative example packs. Samples are very short (~1-3 seconds), used as functional UI feedback, attributed to their original creators. If you fork this repo for public redistribution, consider swapping in audio you own or have a license to redistribute.
 

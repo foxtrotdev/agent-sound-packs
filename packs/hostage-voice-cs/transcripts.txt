@@ -1,0 +1,129 @@
+alldead.wav	Oh good, they're all dead.
+almostouttahere.wav	We're almost out of here.
+almostthere.wav	We're almost there, let's go.
+areyousave.wav	Are you gonna save me?
+awwcrap1.wav	crap
+awwcrap2.wav	Fuck rap!
+awww1.wav	Ugh!
+awww2.wav	AHHHHH!
+awww3.wav	Ah!
+awww4.wav	Ah!
+becareful1.wav	Be careful, they're still around here somewhere.
+becareful2.wav	Be careful, they're still around here somewhere.
+behindyou1.wav	Help what behind you?
+behindyou2.wav	Behind you!
+cantsee.wav	I can't see!
+comeback.wav	Wait, come back here.
+cough1.wav	*coughs*
+cough2.wav	*coughing*
+cough3.wav	*coughing*
+cough4.wav	*cough*
+cough5.wav	*coughing*
+cough6.wav	*cough*
+deargod1.wav	Oh dear God!
+deargod2.wav	Dear God!
+deargod3.wav	Dear God!
+donthurtme1.wav	Domo!
+donthurtme2.wav	Oh, please don't hurt me.
+dontkill.wav	Please don't kill me.
+dontleaveme.wav	Don't leave me.
+doomed.wav	All we're doomed.
+endpeace.wav	Please just end this peacefully.
+finally.wav	Oh, finally.
+finallyhere.wav	Oh, finally you're here.
+finallysafe.wav	Oh, we're finally safe.
+getdown1.wav	Get down!
+getdown2.wav	Oh, get down!
+getdown3.wav	Bucket down!
+getmeoutta1.wav	You've got to get me outta here.
+getmeoutta2.wav	Please get me out of here.
+getouttahere.wav	Let's get the hell out of here.
+godno.wav	Oh god, no.
+goodnews.wav	Oh, that's such good news.
+grenade1.wav	What's your grenade?
+grenade2.wav	Look out, grenade!
+hdeath1.wav	(groans)
+hdeath2.wav	Ow!
+hdeath3.wav	[SCREAMS]
+helpme1.wav	Help me!
+helpme2.wav	Hello!
+hey1.wav	Hey!
+hey2.wav	Hey!
+hos1.wav	Get me outta here.
+hos2.wav	Okay, let's go.
+hos3.wav	Okay, let's go.
+hos4.wav	Let's get the hell out of here.
+hos5.wav	And let's go.
+hpain1.wav	AHHHHH!
+hpain2.wav	AHHHHH!
+hpain3.wav	AHHHHH!
+hpain4.wav	AAH!
+hpain5.wav	Ah!
+hpain6.wav	Ah!
+illfollow.wav	Okay, I'll follow you.
+illgoback1.wav	Oh, don't hurt me, I'll go back.
+illgoback2.wav	I'm sorry, I'll go back.
+illstayhere.wav	Okay, I'll stay here.
+imahostage.wav	They've got us held hostage.
+keepgoing.wav	Keep going, we're so close.
+letsdoit.wav	Okay, I'm ready. Let's do it.
+letsgo.wav	Let's go.
+letshurry.wav	Okay, let's hurry.
+letsmove.wav	Right, let's move.
+lookout1.wav	Look out!
+lookout2.wav	Holy cow!
+lookshooting1.wav	Look out, they're shooting!
+lookshooting2.wav	Look out! They're shooting!
+lookshooting3.wav	I look out, they're shooting!
+myeyes.wav	Oh my eyes!
+nervous1.wav	We're at the moon.
+nervous2.wav	mm-hmm
+nervous3.wav	Hallelujah, Bolle!
+nevernegotiate.wav	They'll never negotiate.
+notfar.wav	Look, it's not very far now.
+notleaveme.wav	You're not gonna leave me here, right?
+nottellanything.wav	I'm not going to tell you anything.
+nowwhat.wav	Now what are we going to do?
+ohgod1.wav	Oh God!
+ohgod2.wav	Oh God!
+ohman.wav	Oh man.
+ohno.wav	Oh no.
+ohno1.wav	Oh no!
+ohno2.wav	Oh no!
+okletsgo.wav	Okay, let's go.
+okokgoing.wav	Okay, okay, I'm going.
+okokgoing2.wav	Okay, I'm going.
+outtahere.wav	Oh good, we're gonna get out of here.
+over1.wav	It's finally over.
+over2.wav	Oh, it's over, finally.
+over3.wav	Oh, I can't believe it's over.
+over4.wav	Oh, it's over.
+over5.wav	Oh, it's finally over.
+overhere1.wav	Over here!
+overhere2.wav	Hey, over here!
+overthere1.wav	But there's one.
+overthere2.wav	Hold the cover there.
+relief.wav	Oh, that's a relief.
+rescueme1.wav	Please rescue me.
+rescueme2.wav	Rescue me, please.
+run.wav	Now run!
+sorry1.wav	I'm sorry, okay?
+sorry2.wav	Okay, I'm sorry, I'm sorry.
+sorry3.wav	I'm sorry, okay, okay.
+startle1.wav	Huh?
+startle2.wav	I'm so drunk.
+startle3.wav	Huh?
+stillaround1.wav	I think they're still around here.
+stillaround2.wav	Watch out, I think they're still here.
+surrender.wav	It's not too late to surrender.
+thankyou.wav	Oh, thank you.
+thereitis.wav	There it is.
+theyregonna.wav	They're gonna kill me, help.
+watchout.wav	Watch out!
+wemadeit1.wav	I can't believe we made it.
+wemadeit2.wav	Oh, we made it.
+wemadeit3.wav	Oh, I can't believe we made it.
+whatdoyou.wav	What do you want from me?
+whyareyou.wav	Why are you doing this?
+yeahillstay.wav	Yeah, I'll just stay here.
+youlead.wav	Okay, you lead the way.
