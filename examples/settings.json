@@ -1,0 +1,60 @@
+{
+  "_comment": "Example Claude Code hooks block. Merge into your ~/.claude/settings.json under the top-level 'hooks' key. Replace absolute path if you installed elsewhere.",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/YOUR_USER/.claude/sounds/play-random.sh stop"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/YOUR_USER/.claude/sounds/play-random.sh notification"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/YOUR_USER/.claude/sounds/play-random.sh subagent"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/YOUR_USER/.claude/sounds/play-random.sh session"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/YOUR_USER/.claude/sounds/play-random.sh compact"
+          }
+        ]
+      }
+    ]
+  }
+}
