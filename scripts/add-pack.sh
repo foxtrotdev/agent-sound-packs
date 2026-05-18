@@ -1,16 +1,18 @@
 #!/bin/bash
-# add-pack.sh — Install a sound pack from the official repo or any git URL.
+# add-pack.sh — Download a sound pack and install it on this machine.
 #
-# Usage:
-#   add-pack.sh <pack-name>                   # from official agent-sound-packs repo
-#   add-pack.sh <git-url> <pack-name>         # from any repo containing packs/<name>/
-#   add-pack.sh -f|--force <pack-name|...>    # overwrite even if pack already exists
+# Easiest:
+#   add-pack.sh duke-nukem-cs            Install a pack from the official catalog.
+#                                        Use list-remote.sh first to see names.
 #
-# Examples:
-#   add-pack.sh duke-nukem-cs
-#   add-pack.sh https://github.com/me/my-packs.git my-pack
+# From someone else's repo:
+#   add-pack.sh <git-url> <pack-name>    The git URL points to a repo that has
+#                                        packs/<pack-name>/ inside it.
 #
-# Requires: git 2.25+ (for sparse-checkout).
+# Re-install (overwrite existing):
+#   add-pack.sh --force duke-nukem-cs
+#
+# Needs git 2.25 or newer on your machine. That's all.
 
 set -euo pipefail
 
@@ -24,7 +26,7 @@ for arg in "$@"; do
   case "$arg" in
     -f|--force) FORCE=1 ;;
     -h|--help)
-      sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '2,15p' "$0" | sed 's/^# \{0,1\}//'
       exit 0 ;;
     *) ARGS+=("$arg") ;;
   esac
@@ -56,13 +58,15 @@ command -v git >/dev/null 2>&1 || { echo "git is required" >&2; exit 1; }
 TMP=$(mktemp -d -t addpack-XXXXXX)
 trap 'rm -rf "$TMP"' EXIT
 
-echo "Fetching $NAME from $REPO ..."
-git clone --quiet --depth 1 --filter=blob:none --sparse "$REPO" "$TMP"
+echo "Downloading $NAME from $REPO ..."
+# Suppress harmless "filtering not recognized by server" warning on file:// / older servers.
+git clone --quiet --depth 1 --filter=blob:none --sparse "$REPO" "$TMP" 2> >(grep -v 'filtering not recognized' >&2)
 git -C "$TMP" sparse-checkout set --quiet "packs/$NAME" 2>/dev/null || \
-  git -C "$TMP" sparse-checkout set "packs/$NAME"
+  git -C "$TMP" sparse-checkout set "packs/$NAME" >/dev/null 2>&1
 
 if [ ! -d "$TMP/packs/$NAME" ]; then
-  echo "Pack '$NAME' not found in $REPO under packs/" >&2
+  echo "ERROR: pack '$NAME' does not exist in $REPO (looked for packs/$NAME/)." >&2
+  echo "Run list-remote.sh to see available pack names." >&2
   exit 1
 fi
 
@@ -81,6 +85,10 @@ fetched_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 EOF
 
 WAVS=$(find "$DEST" -maxdepth 1 -name '*.wav' | wc -l | tr -d ' ')
-echo "Installed $NAME ($WAVS wavs) -> $DEST"
-echo "Source:   $REPO @ ${SHA:0:7}"
-echo "Activate: $ROOT/switch-pack.sh $NAME"
+echo ""
+echo "✓ Installed: $NAME ($WAVS sound files)"
+echo "  Location:  $DEST"
+echo "  Source:    $REPO @ ${SHA:0:7}"
+echo ""
+echo "To start using it now:"
+echo "  $ROOT/switch-pack.sh $NAME"

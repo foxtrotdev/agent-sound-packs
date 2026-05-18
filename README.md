@@ -26,23 +26,40 @@
 
 ---
 
-## Quickstart (60 s, macOS / Linux / WSL)
+## Quickstart (60 s — copy, paste, you're done)
+
+Open a terminal and run these in order. Works on macOS, Linux, and WSL.
 
 ```bash
+# 1. Download the project
 git clone https://github.com/foxtrotdev/agent-sound-packs.git
 cd agent-sound-packs
-./install.sh                                  # copies scripts + pool.conf + bundled wavs
-~/.claude/sounds/scripts/test-sounds.sh       # confirm playback works on your OS
-~/.claude/sounds/switch-pack.sh mortal-kombat # pick a pack
 
-# Wire it into Claude Code (one-liner if you have jq):
+# 2. Install — copies scripts, configs, and bundled sounds to ~/.claude/sounds/
+./install.sh
+
+# 3. Confirm sound works on your system (you should hear 5 short clips)
+~/.claude/sounds/scripts/test-sounds.sh
+
+# 4. Pick which pack should be active
+~/.claude/sounds/switch-pack.sh mortal-kombat
+
+# 5. Tell Claude Code to use the hooks (one-liner if you have jq installed):
 jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
   > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
 ```
 
-That's it. Next Claude Code reply ends with a sound. No restart needed.
+**Don't have `jq`?** If your `~/.claude/settings.json` is empty / doesn't exist, just copy:
+```bash
+cp ~/.claude/sounds/suggested-hooks.json ~/.claude/settings.json
+```
+Otherwise open both files in your editor and paste the `"hooks"` block from `suggested-hooks.json` into your existing `settings.json`.
 
-Other agents → [`docs/codex.md`](docs/codex.md) · [`docs/other-tools.md`](docs/other-tools.md).
+That's it. The very next Claude Code reply will end with a sound. No restart needed.
+
+**Want more packs?** Browse with `~/.claude/sounds/scripts/list-remote.sh`, then install any with `~/.claude/sounds/scripts/add-pack.sh <name>`.
+
+Using a different agent? → [`docs/codex.md`](docs/codex.md) · [`docs/other-tools.md`](docs/other-tools.md).
 
 ---
 
@@ -230,34 +247,58 @@ Example: `sp futurama` switches pack, `sp-test` plays all events.
 
 ## Pack management (install / update / browse)
 
-Three helper scripts manage packs from this repo or any community repo, without re-cloning anything manually.
+Three commands. Copy, paste, done. You only need `git` on your machine.
+
+### See what packs you can install
 
 ```bash
-# Browse what's available in the official registry
 ~/.claude/sounds/scripts/list-remote.sh
+```
 
-# Install a pack from the official repo
+Prints a table of every pack in the official catalog (name, language, what kind of audio, how many clips, one-line description). No download happens.
+
+### Install a pack
+
+```bash
 ~/.claude/sounds/scripts/add-pack.sh duke-nukem-cs
+```
 
-# Install a pack from any community repo (just point at the git URL)
-~/.claude/sounds/scripts/add-pack.sh https://github.com/alice/my-packs.git my-pack
+Replace `duke-nukem-cs` with any name from the list above. The pack lands in `~/.claude/sounds/packs/<name>/` and is ready to switch to.
 
-# Re-fetch one pack from its recorded source
+**Want to use it right after install?**
+```bash
+~/.claude/sounds/switch-pack.sh duke-nukem-cs
+```
+
+**Install from someone else's repo (community pack):**
+```bash
+~/.claude/sounds/scripts/add-pack.sh https://github.com/alice/her-packs.git stranger-things
+```
+The URL is the git repo, the second word is the pack folder name inside it.
+
+### Update packs
+
+```bash
+# Update one pack
 ~/.claude/sounds/scripts/update-pack.sh duke-nukem-cs
 
-# Update every installed pack (and tell you which ones have new commits)
+# Update everything you've installed
 ~/.claude/sounds/scripts/update-pack.sh --all
 
-# Dry-run: check which packs are behind upstream without touching anything
+# Just check what's out of date — don't actually download anything
 ~/.claude/sounds/scripts/update-pack.sh --check
 ```
 
-Under the hood:
-- Uses `git sparse-checkout` to download only the requested `packs/<name>/` subdirectory — full repo never lands on disk.
-- Writes `.source` inside each installed pack recording `repo`, commit `sha`, and `fetched_at`. `update-pack.sh` reads that to know where to refresh from.
-- `list-remote.sh` reads [`packs.json`](packs.json) from the official repo for metadata (name, language, voice/sfx, wav count, description).
+`update-pack.sh` remembers where each pack came from (official repo or a community one) and refreshes from the same place. If a pack is already up to date, it tells you and does nothing.
 
-> Publishing your own pack? Put it at `packs/<name>/` in any git repo and anyone can install it with one command. Optional: add an entry to your own `packs.json` so `list-remote.sh`-style tools work against your registry.
+<details>
+<summary>How it works (skip unless curious)</summary>
+
+- Uses `git sparse-checkout` so only the requested `packs/<name>/` folder is downloaded — never the full repo.
+- Each installed pack carries a `.source` file with the repo URL, commit SHA, and install timestamp. `update-pack.sh` reads it to know where to re-fetch from.
+- `list-remote.sh` reads [`packs.json`](packs.json) from raw.githubusercontent.com (no GitHub login needed).
+- Publishing your own packs? Put them at `packs/<name>/` in any public git repo. Anyone installs them with `add-pack.sh <your-git-url> <name>`. Optional: ship your own `packs.json` for catalog browsing.
+</details>
 
 ---
 
