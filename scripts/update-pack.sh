@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # update-pack.sh — Refresh installed packs from where they came from.
 #
 # Update one pack:        update-pack.sh duke-nukem-cs

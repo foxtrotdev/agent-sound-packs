@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # codex-notify.sh — OpenAI Codex CLI notify-hook adapter.
 #
 # Codex CLI calls the `notify` program with a single JSON-string argument

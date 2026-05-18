@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # switch-pack.sh — Switch active sound pack.
 # Usage: switch-pack.sh [pack-name]
 #   no args   → show current + list available

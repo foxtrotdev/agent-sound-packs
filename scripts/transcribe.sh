@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # transcribe.sh — Transcribe all .wav files in a pack folder using whisper.cpp.
 # Saves transcripts.txt (filename<TAB>text). Helper for curating new packs.
 #
