@@ -1,0 +1,52 @@
+growling-ss-1.wav	(growling)
+sigh-ss.wav	*Sigh*
+whoo-hoo-1.wav	Whoo-hoo!
+dont-1.wav	DON'T!
+whoo-hoo-2.wav	Whoo-hoo!
+oh-man.wav	Oh man.
+mmm.wav	- Mmm.
+aaaah-1.wav	AAAAAAAAH!
+sound-clip.wav	[SOUND]
+didnt-do-it.wav	I didn't do it.
+ha-ha.wav	HA HA!
+whoo-hoo-3.wav	Whoo-hoo!
+whoo-hoo-4.wav	Whoo-hoo!
+ah-ha-1.wav	Ah-ha!
+ah-ha-2.wav	Ah-ha!
+ah-ha-3.wav	Ah-ha!
+ah-ha-4.wav	Ah-ha!
+shut-up-1.wav	Shut up!
+ah-ha-5.wav	Ah-ha!
+hey-hey.wav	HEY HEY!
+damn-you-all.wav	Damn you! Damn you all to hell!
+growling-ss-2.wav	(growling)
+silent-ss-1.wav	
+silent-ss-2.wav	
+shut-up-2.wav	Shut up!
+ha-ha-laugh.wav	Ha ha ha ha ha ha!
+laughing-ss.wav	[Laughing]
+shut-up-3.wav	Shut up!
+dont-2.wav	DON'T!
+screaming-ss-1.wav	(screaming)
+aaaah-2.wav	AAAAAAAAH!
+screams-ss-1.wav	*screams*
+silent-ss-3.wav	
+silent-ss-4.wav	
+silent-ss-5.wav	
+dont-3.wav	DON'T!
+growling-ss-3.wav	(growling)
+screaming-ss-2.wav	(screaming)
+silent-ss-6.wav	
+silent-ss-7.wav	
+silent-ss-8.wav	
+whoo-hoo-5.wav	Whoo-hoo!
+shut-up-4.wav	Shut up!
+screams-ss-2.wav	*screams*
+ew.wav	- Ew.
+screams-ss-3.wav	*screams*
+wet-my-bed.wav	I think I wet my bed.
+laughter.wav	[Laughter]
+lovely-democrats.wav	LOVELY DEMOCRATES!
+thank-you-our.wav	Thank you, our-
+golly-golly.wav	Oh, golly, golly.
+screams-ss-4.wav	*screams*
