@@ -1,15 +1,13 @@
 #!/bin/bash
-# update-pack.sh — Re-fetch installed sound packs from their original source.
+# update-pack.sh — Refresh installed packs from where they came from.
 #
-# Usage:
-#   update-pack.sh <pack-name>     # update one pack
-#   update-pack.sh --all           # update every installed pack
-#   update-pack.sh --check         # show which packs have new commits upstream (no fetch)
-#   update-pack.sh --check <name>  # check one pack
+# Update one pack:        update-pack.sh duke-nukem-cs
+# Update everything:      update-pack.sh --all
+# Just check, no fetch:   update-pack.sh --check        (all packs)
+#                         update-pack.sh --check <name> (one pack)
 #
-# Each pack carries a .source file (written by add-pack.sh) recording the
-# repo URL and commit SHA it was installed from. This script reads that and
-# re-installs from the same source.
+# If a pack is already up to date you'll see "up to date" and nothing happens.
+# Packs you installed by hand (no .source file) are skipped — they're yours.
 
 set -euo pipefail
 
@@ -27,7 +25,7 @@ for arg in "$@"; do
     --all)   TARGETS=(__ALL__) ;;
     --check) CHECK_ONLY=1 ;;
     -h|--help)
-      sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'
       exit 0 ;;
     *) TARGETS+=("$arg") ;;
   esac

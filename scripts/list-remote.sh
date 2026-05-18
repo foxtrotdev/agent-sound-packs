@@ -1,9 +1,13 @@
 #!/bin/bash
-# list-remote.sh — Show every pack available in the official registry.
+# list-remote.sh — Show every pack you can install from the official catalog.
 #
-# Reads packs.json from raw.githubusercontent.com (no auth, no git checkout).
-# Prints a small table: name, lang, voice, wavs, description.
-# Falls back to GitHub API directory listing if packs.json is missing.
+# Just run it:
+#   list-remote.sh
+#
+# Prints a small table: name, language, type (voice or sfx), number of clips,
+# one-line description. Nothing is downloaded — this is just for browsing.
+# Copy a name from the NAME column, then run:
+#   add-pack.sh <that-name>
 
 set -euo pipefail
 
