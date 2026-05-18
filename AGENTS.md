@@ -39,9 +39,9 @@ This repo provides audible feedback for Claude Code lifecycle events. The archit
 
 4. **Install paths.** Players land at `$CCSP_ROOT/play-random.sh` and `$CCSP_ROOT/switch-pack.sh` (TOP LEVEL — not under `scripts/`). Settings.json hooks reference absolute paths; nesting them breaks installs.
 
-5. **File naming convention** for wav files inside a pack: lowercase, kebab-case, numeric suffixes with dash. Validated implicitly by pool.conf references. See `README.md#file-naming-convention`.
+5. **File naming convention** for wav files inside a pack: lowercase, kebab-case, numeric suffixes with dash. Names should be **content-descriptive** (a 2–4 word slug derived from what the clip actually says or sounds like), not arbitrary slot names. Filenames do NOT need to match across packs — `pool.conf` is the only thing that references them. Validated implicitly by pool.conf references. See `README.md#file-naming-convention`.
 
-6. **No audio committed.** `*.wav`, `*.mp3`, `*.aiff`, `*.m4a`, `*.ogg`, `*.flac` are gitignored. Pack contributions ship `pool.conf` + optional `transcripts.txt` only; users supply their own audio.
+6. **Audio handling.** Pack contributions ship `pool.conf` + optional `transcripts.txt`. Whether to commit `.wav` files is the contributor's decision (the maintainer's example packs include them; forks for public redistribution should consider rights). `.gitignore` does NOT exclude audio by default — add it back in your fork if you want a wavs-out-of-tree workflow.
 
 7. **No-spam events.** `PreToolUse`, `PostToolUse`, `UserPromptSubmit` are deliberately unmapped. Do not add support unless explicitly requested.
 
