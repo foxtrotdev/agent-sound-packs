@@ -139,9 +139,9 @@ Intentionally **unmapped** across all tools:
 ~/.claude/sounds/scripts/test-sounds.sh
 ```
 
-### From Claude Code (slash commands)
+### From inside an AI coding agent (slash commands)
 
-Copy the files in [`examples/commands/`](examples/commands/) to `~/.claude/commands/` (no restart needed) and you get:
+Same four commands available across multiple agents — pick the install for your tool:
 
 | Command | What it does |
 |---------|--------------|
@@ -150,7 +150,35 @@ Copy the files in [`examples/commands/`](examples/commands/) to `~/.claude/comma
 | `/sound-test` | Play one clip from each event pool of active pack |
 | `/sound-new <name>` | Scaffold a new pack folder with a `pool.conf` template |
 
-The slash commands are thin wrappers that invoke the shell scripts above.
+Install per agent:
+
+| Agent | Source dir | Install dir | Restart? |
+|-------|-----------|-------------|----------|
+| Claude Code | `examples/commands-claude/*.md` | `~/.claude/commands/` | no |
+| OpenAI Codex CLI | `examples/commands-codex/*.md` | `~/.codex/prompts/` | yes (restart session) |
+| Aider, Cursor, others | (no custom slash commands yet) | — | use shell aliases below |
+
+The slash command files are thin wrappers — they tell the agent to invoke the shell scripts.
+
+### From any shell (aliases — agent-independent)
+
+If your agent doesn't support custom slash commands, or you just like the terminal, source the alias file from your `~/.zshrc` or `~/.bashrc`:
+
+```bash
+echo 'source ~/.claude/sounds/scripts/aliases.sh' >> ~/.zshrc
+exec zsh
+```
+
+You get four commands that work in any terminal:
+
+| Alias | Equivalent |
+|-------|-----------|
+| `sp` | `switch-pack.sh` (list / switch) |
+| `sp-test` | `test-sounds.sh` |
+| `sp-new <name>` | `new-pack.sh` |
+| `sp-play <event>` | `play-random.sh <event>` |
+
+Example: `sp futurama` switches pack, `sp-test` plays all events.
 
 ---
 
