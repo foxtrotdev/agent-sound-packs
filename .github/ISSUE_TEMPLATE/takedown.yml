@@ -1,0 +1,40 @@
+name: Pack takedown request (rightsholder)
+description: You are a rightsholder and want a bundled pack removed.
+title: "[takedown] "
+labels: ["takedown", "priority"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a non-commercial fan project. If you are the rightsholder (or authorized representative) and want a pack removed, the pack will be pulled from the repository **on first request, no questions asked**.
+
+        You do not need a lawyer, a DMCA notice, or any formal language — a plain statement is enough.
+  - type: input
+    id: pack
+    attributes:
+      label: Pack name (folder under `packs/`)
+      placeholder: "mortal-kombat"
+    validations:
+      required: true
+  - type: input
+    id: rightsholder
+    attributes:
+      label: Rightsholder / your relationship to them
+      placeholder: "NetherRealm Studios / I am authorized to act on their behalf"
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope of takedown
+      description: Whole pack? Specific files? Both bundled repo and remote registry?
+      placeholder: "Remove entire pack `mortal-kombat/` from repo + registry"
+    validations:
+      required: true
+  - type: textarea
+    id: contact
+    attributes:
+      label: Contact for confirmation (optional)
+      description: Email or other channel. Used only to confirm removal completed.
+    validations:
+      required: false

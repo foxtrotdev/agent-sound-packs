@@ -1,0 +1,49 @@
+name: New pack request
+description: Suggest a new sound pack to bundle (or volunteer to contribute one).
+title: "[pack] "
+labels: ["pack-request", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pack suggestions welcome. Note: bundled packs must clear the **non-commercial fan-use** bar (short clips, used as functional UI cues). If a rightsholder objects, the pack is pulled — no questions asked.
+  - type: input
+    id: source
+    attributes:
+      label: Source (game / show / film)
+      placeholder: "Half-Life 2 / Futurama / Adventure Time"
+    validations:
+      required: true
+  - type: textarea
+    id: lines
+    attributes:
+      label: Candidate lines (per event)
+      description: |
+        Suggest 3–10 short clips per event. Events: `stop`, `notification`, `subagent`, `session`, `compact`.
+      placeholder: |
+        stop: "Mission accomplished", "Objective complete", ...
+        notification: "Sir, you have mail", ...
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: Source clip licensing
+      description: "Where you'd get the audio from. Original game files / archive.org / your own recording / TTS?"
+      placeholder: "extracted from GCF, fair-use short clips"
+    validations:
+      required: true
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Can you contribute the pack yourself?
+      options:
+        - label: I will open a PR with the pack (`pool.conf` + `.wav` files, ≤5 MiB each, ≤200 MiB total).
+        - label: I can only suggest — looking for a maintainer to build it.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Anything else relevant (community fork, existing recording archive, etc.)
+    validations:
+      required: false
