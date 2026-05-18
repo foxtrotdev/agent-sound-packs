@@ -1,0 +1,78 @@
+name: Bug report
+description: Something does not work — install fails, no sound, validator rejects a valid pack, etc.
+title: "[bug] "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Fill what you can — `OS`, `bash --version`, and the exact command that broke are the most useful.
+  - type: input
+    id: os
+    attributes:
+      label: OS / platform
+      placeholder: "macOS 14.5 / Ubuntu 22.04 / WSL2 Debian 12 / Fedora 40"
+    validations:
+      required: true
+  - type: input
+    id: bash
+    attributes:
+      label: bash version
+      description: "Output of `bash --version | head -1`"
+      placeholder: "GNU bash, version 5.2.21(1)-release"
+    validations:
+      required: true
+  - type: input
+    id: player
+    attributes:
+      label: Audio player detected
+      description: "Run `command -v afplay pw-play paplay aplay ffplay powershell.exe 2>/dev/null` and paste the first hit, or 'none'."
+      placeholder: "paplay"
+    validations:
+      required: false
+  - type: input
+    id: pack
+    attributes:
+      label: Active pack
+      description: "`cat ~/.claude/sounds/active-pack`"
+      placeholder: "mortal-kombat"
+    validations:
+      required: false
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands. Copy-paste, no paraphrasing.
+      placeholder: |
+        1. git clone ...
+        2. ./install.sh
+        3. ~/.claude/sounds/scripts/test-sounds.sh
+        → no sound, exit 0
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+      placeholder: "Expected: 5 short clips. Actual: silence, no error."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / stderr
+      description: "Re-run with `bash -x <script>` and paste relevant output."
+      render: shell
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Sanity checks
+      options:
+        - label: I ran `./install.sh` and did not edit the installed scripts manually.
+          required: true
+        - label: I am NOT installing onto `/mnt/c/...` (WSL only — drvfs strips exec bit).
+          required: false
+        - label: I am on the latest `main` (`git pull` before reporting).
+          required: true
