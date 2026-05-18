@@ -1,15 +1,25 @@
-# agent-sound-packs
+<p align="center">
+  <img src="logo.png" alt="agent-sound-packs" width="280">
+</p>
 
-Audible feedback for AI coding-agent CLIs. Each lifecycle event — task done, awaiting input, subagent finished, session start, context compact — plays a randomly chosen short sound from the active pack.
+<h1 align="center">agent-sound-packs</h1>
 
-Works with:
+<p align="center">
+  <strong>Your AI coding agent talks back.</strong><br>
+  Themed sound packs that play short clips when your agent finishes a task, needs input, or hits other lifecycle events. Drop in any folder of <code>.wav</code> files, map each event to its own sound pool, switch themes in one command.
+</p>
 
-- [Claude Code](https://claude.com/claude-code) — all five events
-- [OpenAI Codex CLI](https://github.com/openai/codex) — `stop` event (via the bundled adapter)
-- [Aider](https://github.com/Aider-AI/aider) — `stop` event (via its `notifications-command` config)
-- Other tools: any CLI agent that supports a post-turn shell hook can call `play-random.sh stop`.
+<p align="center">
+  Works with <a href="https://claude.com/claude-code">Claude Code</a> · <a href="https://github.com/openai/codex">Codex CLI</a> · <a href="https://github.com/Aider-AI/aider">Aider</a> · any agent CLI with a post-turn hook.
+</p>
 
-> This repository bundles short third-party audio samples (Mortal Kombat, Futurama) as illustrative packs for hook integration. Samples are very short (~1-3 seconds), used as functional UI feedback, and clearly attributed to their original creators. If you fork this repo for redistribution, consider swapping in audio you own or have a license to redistribute.
+---
+
+## In one breath
+
+Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Two example packs included (Mortal Kombat, Futurama); add your own in 30 seconds.
+
+> This repository bundles short third-party audio samples (Mortal Kombat, Futurama) as illustrative example packs. Samples are very short (~1-3 seconds), used as functional UI feedback, attributed to their original creators. If you fork this repo for public redistribution, consider swapping in audio you own or have a license to redistribute.
 
 ---
 
