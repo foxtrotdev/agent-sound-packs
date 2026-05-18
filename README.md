@@ -30,7 +30,12 @@
 
 Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Eleven example packs included (Mortal Kombat, Futurama, Ace Ventura, Commander Keen, DBZ, Looney Tunes, Pinky and The Brain, The Simpsons, Duke Nukem, CS Hostage, CoD Modern Warfare); add your own in 30 seconds.
 
-> This repository bundles short third-party audio samples as illustrative example packs. Samples are very short (~1-3 seconds), used as functional UI feedback, attributed to their original creators. If you fork this repo for public redistribution, consider swapping in audio you own or have a license to redistribute.
+> **Non-commercial fan project — no monetization.**
+> This is a hobbyist open-source utility. The maintainer earns nothing from it (no ads, no sponsorships, no paid tiers, no donation drives). The bundled audio packs are short clips from games, cartoons, and films, reused here solely as functional UI cues (~1-3 seconds each, played as system feedback for a developer tool — analogous to a notification chime). All copyrights remain with their original creators (Valve, Apogee/3D Realms, Activision, Midway/NetherRealm, 20th Century Fox/Disney, Warner Bros., id Software, and others); no ownership is claimed. Use is intended as fair use / non-commercial transformative use only.
+>
+> **Are you a rightsholder and want a pack removed?** Open an issue (or email the maintainer); the pack will be pulled from the repo on first request, no questions asked.
+>
+> **Forking for public redistribution?** Swap the bundled wavs for audio you own or have a license for. The system is content-agnostic — it only needs short `.wav` files and a `pool.conf`.
 
 ---
 
