@@ -1,0 +1,52 @@
+amazing.wav	Excellent.
+boring.wav	It's official. You Suck.
+brilliant.wav	Outstanding
+bummer.wav	(groaning)
+bungee.wav	(screaming)
+bye-bye.wav	(screaming)
+collect.wav	(laughing)
+come-on-then.wav	That was pathetic.
+coward.wav	You weak pathetic fool.
+dragon-punch.wav	You're the only one with a double butt!
+drop.wav	COME HERE!
+excellent.wav	Excellent.
+fatality.wav	Fatality.
+fire.wav	Tasty!
+fireball.wav	Toasty
+first-blood.wav	You weak pathetic fool.
+flawless.wav	Flawless victory.
+go-away.wav	You're still trying to win?
+grenade.wav	Yes, please!
+hello.wav	You will never win.
+ill-get-you.wav	That was pathetic.
+incoming.wav	(screaming)
+jump-1.wav	(grunting)
+jump-2.wav	(grunting)
+just-you-wait.wav	Don't make me laugh.
+kamikaze.wav	Get over here!
+laugh.wav	(laughing)
+leave-me-alone.wav	(screaming)
+missed.wav	That was pathetic.
+nooo.wav	(screaming)
+oh-dear.wav	(groaning)
+oi-nutter.wav	(screaming)
+oof-1.wav	WHA-
+oof-2.wav	WHA-
+oof-3.wav	WHA-
+oops.wav	(groaning)
+orders.wav	Yes, please!
+ouch.wav	(groaning)
+ow-1.wav	Ow!
+ow-2.wav	- Oh!
+ow-3.wav	(screams)
+perfect.wav	Flawless victory.
+revenge.wav	Is that your best?
+run-away.wav	You will die, mortal.
+stupid.wav	♪ Frosty ♪
+take-cover.wav	Yes, please!
+traitor.wav	(growling)
+victory.wav	Victory!
+watch-this.wav	You will die, mortal.
+what-the.wav	(screaming)
+yes-sir.wav	Gotcha!
+youll-regret-that.wav	You will die, mortal.

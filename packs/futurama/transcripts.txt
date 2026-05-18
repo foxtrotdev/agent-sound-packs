@@ -1,0 +1,52 @@
+amazing.wav	Hey, it worked!
+boring.wav	Don't girl me with that girl stuff.
+brilliant.wav	I like your style.
+bummer.wav	Nice catch, idiot.
+bungee.wav	Hey, ho!
+bye-bye.wav	Goodbye!
+collect.wav	Thank you!
+come-on-then.wav	Shall I fire on them now, sir?
+coward.wav	Bite my shiny metal ass!
+dragon-punch.wav	BAM!
+drop.wav	- Hey, thanks.
+excellent.wav	Excellent, excellent!
+fatality.wav	[CHEERING]
+fire.wav	(mumbles)
+fireball.wav	- Up yours, bimbo!
+first-blood.wav	Death to humans! (audience cheers)
+flawless.wav	Alright, show's over, I'm tired.
+go-away.wav	I'm not really in the mood.
+grenade.wav	You don't want that
+hello.wav	Yoo-hoo.
+ill-get-you.wav	He's pending for a bending!
+incoming.wav	Now here's a disturbing reminder!
+jump-1.wav	(grunts)
+jump-2.wav	What?
+just-you-wait.wav	I'm gonna get 24th century on his ass.
+kamikaze.wav	I don't know how that's gonna be!
+laugh.wav	Wow, hehehehe.
+leave-me-alone.wav	(crying)
+missed.wav	Forget it. He's gay.
+nooo.wav	(groans)
+oh-dear.wav	I think I'm gonna die.
+oi-nutter.wav	You're obviously confused and aroused.
+oof-1.wav	(screams)
+oof-2.wav	Oof!
+oof-3.wav	(grunts)
+oops.wav	Oh, jeez.
+orders.wav	- I'm gonna do it!
+ouch.wav	How?
+ow-1.wav	- Oh!
+ow-2.wav	- Ow!
+ow-3.wav	Ow!
+perfect.wav	Wow, I never would have thought of that!
+revenge.wav	Delicious.
+run-away.wav	It's every man from South!
+stupid.wav	Buh.
+take-cover.wav	Now we're gonna die.
+traitor.wav	Don't help him mutilate himself!
+victory.wav	I'm filled with a large number of powerful emotions.
+watch-this.wav	You don't want that
+what-the.wav	- Uh-oh.
+yes-sir.wav	We're gonna kick it up a notch.
+youll-regret-that.wav	You are in way over your head.
