@@ -43,4 +43,4 @@ Run Codex on a quick task — when the turn completes, the same sound fires.
 
 - The adapter parses JSON without `jq`. If you add support for more Codex event types, keep the parser dependency-free (or document `jq` as a soft requirement).
 - Codex `notify` is fired once per agent turn completion. There is no per-tool-call hook — which is exactly what we want (no spam).
-- If you run Codex CLI on Linux, replace `afplay` in `~/.claude/sounds/play-random.sh` with `paplay` / `aplay` / `pw-play` — see `README.md#adapting-the-player`.
+- On Linux/WSL no edits needed — `play-random.sh` auto-detects `pw-play` / `paplay` / `aplay` / `ffplay` / Windows `powershell.exe` at runtime. Override with `CCSP_PLAYER="my-tool"`. See `README.md#adapting-the-player`.
