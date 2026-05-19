@@ -34,6 +34,16 @@ for s in add-pack.sh update-pack.sh list-remote.sh validate-pack.sh; do
 done
 chmod +x "$DEST/play-random.sh" "$DEST/switch-pack.sh" "$DEST"/scripts/*.sh
 
+# Detect repo + commit so update-pack.sh can refresh bundled packs later.
+# (Without a .source file, update-pack.sh treats a pack as manually installed and skips it.)
+SRC_REPO=""
+SRC_COMMIT=""
+if command -v git >/dev/null 2>&1 && git -C "$SRC_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+  SRC_REPO=$(git -C "$SRC_DIR" config --get remote.origin.url 2>/dev/null || true)
+  SRC_COMMIT=$(git -C "$SRC_DIR" rev-parse HEAD 2>/dev/null || true)
+fi
+SRC_REPO="${SRC_REPO:-https://github.com/foxtrotdev/agent-sound-packs.git}"
+
 # Pack definitions + bundled wavs
 for pack_dir in "$SRC_DIR/packs"/*/; do
   name=$(basename "$pack_dir")
@@ -47,6 +57,14 @@ for pack_dir in "$SRC_DIR/packs"/*/; do
       cp "$w" "$DEST/packs/$name/"
       wav_count=$((wav_count + 1))
     done
+  fi
+  # Write .source so update-pack.sh can later refresh this pack from upstream.
+  if [ -n "$SRC_COMMIT" ]; then
+    {
+      echo "repo=$SRC_REPO"
+      echo "commit=$SRC_COMMIT"
+      echo "installed=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    } > "$DEST/packs/$name/.source"
   fi
   echo "  pack: $name (pool.conf + $wav_count wavs)"
 done
