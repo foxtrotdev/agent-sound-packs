@@ -90,6 +90,14 @@
       "voice": true,
       "tags": ["cartoons", "comedy"],
       "wav_count": 52
+    },
+    {
+      "name": "fenix-gaming",
+      "description": "Quake/UT killstreak announcer (\"Dominating!\", \"Godlike!\", \"Headshot!\") — from cs.fenix.lt server.",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fps", "announcer", "killstreak"],
+      "wav_count": 39
     }
   ]
 }
