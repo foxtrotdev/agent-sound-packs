@@ -26,6 +26,35 @@
 
 ---
 
+## Before you start
+
+You need:
+
+- **A terminal.** Terminal.app on macOS, any terminal on Linux, **WSL** on Windows (see callout below — native PowerShell / cmd will not work).
+- **`git`** installed. (`git --version` in your terminal — if it errors, install from [git-scm.com](https://git-scm.com/downloads).)
+- **At least one supported agent CLI:** [Claude Code](https://claude.com/claude-code), [Codex CLI](https://github.com/openai/codex), or [Aider](https://github.com/Aider-AI/aider).
+- **Optional but recommended: `jq`** — used by the one-liner hook merge. Install:
+  - macOS: `brew install jq`
+  - Debian / Ubuntu / WSL: `sudo apt install -y jq`
+  - Fedora / RHEL: `sudo dnf install -y jq`
+  - Arch: `sudo pacman -S jq`
+  - Windows (inside WSL — see below): use the WSL line above.
+
+> **Windows users — read this first.** This project is a Bash toolkit. It runs in **WSL** (Windows Subsystem for Linux), not native PowerShell or cmd.
+>
+> 1. Open PowerShell as administrator → `wsl --install` ([Microsoft docs](https://learn.microsoft.com/en-us/windows/wsl/install))
+> 2. Reboot, launch **Ubuntu** (or your installed WSL distro) from the Start menu.
+> 3. Inside WSL: `sudo apt update && sudo apt install -y git jq pulseaudio-utils`
+> 4. Continue with the Quickstart below **inside the WSL terminal**, not in PowerShell / cmd.
+
+**Quick concept check** — three words that show up everywhere below:
+
+- **pack** = a folder of `.wav` files plus a `pool.conf` that maps each event to its sounds.
+- **event** = a moment in the agent's lifecycle (`stop`, `notification`, `subagent`, `session`, `compact`).
+- **hook** = the shell command your agent runs when an event fires — that's what triggers a sound.
+
+---
+
 ## Quickstart (60 s — copy, paste, you're done)
 
 Open a terminal and run these in order. Works on macOS, Linux, and WSL.
@@ -531,6 +560,9 @@ Override with `CCSP_PLAYER="mpv --really-quiet"` (or any command that takes a fi
 | `Pack not found` | Typo, or `packs/<name>/` missing | `switch-pack.sh` (no args) lists available packs |
 | Hooks fire but the agent feels slow | Long sounds blocking | The trailing `&` on `afplay` should background it — verify it's there |
 | Codex doesn't trigger anything | `notify` config wrong, or Codex not restarted | Test the adapter directly (see `docs/codex.md#verifying`) |
+| Windows: `'./install.sh' is not recognized` or `bash: command not found` | Running in PowerShell / cmd instead of WSL | Install WSL first — see [Before you start](#before-you-start), then re-run inside the WSL terminal |
+| Windows / WSL: no sound, no error | PulseAudio missing in WSL | `sudo apt install -y pulseaudio-utils`, or override with `CCSP_PLAYER="powershell.exe -c (New-Object Media.SoundPlayer \"$1\").PlaySync()"` |
+| `jq: command not found` when merging hooks | `jq` not installed | Install: `brew install jq` (macOS) · `sudo apt install -y jq` (Debian/Ubuntu/WSL) · `sudo dnf install -y jq` (Fedora). Or paste the hooks block from `suggested-hooks.json` by hand |
 
 ---
 
