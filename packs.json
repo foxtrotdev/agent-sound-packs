@@ -90,6 +90,14 @@
       "voice": true,
       "tags": ["cartoons", "comedy"],
       "wav_count": 52
+    },
+    {
+      "name": "quake-killstreak-cs",
+      "description": "Quake/UT killstreak announcer (\"Dominating!\", \"Godlike!\", \"Headshot!\", \"Flawless Victory!\").",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "fps", "announcer", "killstreak"],
+      "wav_count": 39
     }
   ]
 }
