@@ -98,6 +98,14 @@
       "voice": true,
       "tags": ["games", "fps", "announcer", "killstreak"],
       "wav_count": 39
+    },
+    {
+      "name": "myinstants-top",
+      "description": "Viral meme stingers from myinstants.com top sounds (anime-wow, rizz, hee-hee, 999 siren, dun-dun-dun, etc.).",
+      "language": "en",
+      "voice": false,
+      "tags": ["memes", "viral", "stingers"],
+      "wav_count": 16
     }
   ]
 }
