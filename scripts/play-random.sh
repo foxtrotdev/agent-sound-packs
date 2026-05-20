@@ -24,6 +24,22 @@ case "$1" in
   *) exit 1 ;;
 esac
 
+# Debounce: skip play if the previous play fired < CCSP_DEBOUNCE_MS ago.
+# Prevents Stop+SubagentStop double-trigger and Notification permission-prompt spam.
+# Set CCSP_DEBOUNCE_MS=0 to disable. Default 2000 ms.
+DEBOUNCE_MS="${CCSP_DEBOUNCE_MS:-2000}"
+LOCK="${TMPDIR:-/tmp}/.ccsp_last_play"
+# Cross-platform ms epoch: GNU date → perl → seconds*1000 fallback.
+NOW_MS=$(date +%s%3N 2>/dev/null)
+case "$NOW_MS" in
+  *N|*[!0-9]*|"") NOW_MS=$(perl -MTime::HiRes=time -e 'printf "%d", time*1000' 2>/dev/null || echo $(($(date +%s) * 1000))) ;;
+esac
+LAST_MS=$(cat "$LOCK" 2>/dev/null)
+case "$LAST_MS" in *[!0-9]*|"") LAST_MS=0 ;; esac
+if [ "$DEBOUNCE_MS" -gt 0 ] 2>/dev/null && [ $((NOW_MS - LAST_MS)) -lt "$DEBOUNCE_MS" ]; then
+  exit 0
+fi
+
 # Safe parser: extract one POOL_<EVENT>=( ... ) block, take only safe basenames.
 # Awk reads the file byte-stream, flips a flag on the opening line, captures
 # entries until the closing ')'. Never invokes shell.
@@ -59,6 +75,9 @@ IFS=$'\n' read -r -d '' -a entries < <(printf '%s\0' "$pool")
 pick="${entries[$RANDOM % ${#entries[@]}]}"
 FILE="$DIR/$pick"
 [ -f "$FILE" ] || exit 0
+
+# Update debounce lock — only when we actually play.
+echo "$NOW_MS" > "$LOCK" 2>/dev/null || true
 
 # Auto-detect audio player. Backgrounded so the hook returns fast.
 # Override with CCSP_PLAYER="my-player" to skip detection.
