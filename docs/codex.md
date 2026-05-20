@@ -12,6 +12,14 @@ Codex currently emits one notification event type (subject to change as Codex ev
 
 That's it. Codex doesn't (yet) expose hooks for session start, awaiting-input, or context compaction. You'll get a "task done" chime, nothing else, until upstream adds more event types — at which point extend `scripts/integrations/codex-notify.sh`.
 
+### No sound on permission/approval prompts
+
+When Codex stops mid-turn to ask for command approval, **no sound plays**. Codex CLI does not emit a `notify` event for approval prompts — the TUI handles them inline. Compare to Claude Code, which fires `Notification` for permission prompts and idle waits (mapped to the `notification` pool).
+
+Workarounds, none clean:
+- File an upstream feature request at [`openai/codex`](https://github.com/openai/codex) for a `notify` event like `approval-request` / `awaiting-input`. Once added, extend `codex-notify.sh` to map it to `notification`.
+- Run Codex with `--auto` / non-interactive mode where no approval is needed (defeats the point if you actually want to gate commands).
+
 ## Install
 
 1. Run the project installer:

@@ -9,7 +9,7 @@
   <img alt="Platform: macOS / Linux / WSL" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-lightgrey.svg">
   <img alt="Shell: Bash" src="https://img.shields.io/badge/shell-bash-4EAA25.svg?logo=gnu-bash&logoColor=white">
   <img alt="Audio: auto-detect" src="https://img.shields.io/badge/audio-afplay%20%7C%20pw--play%20%7C%20paplay%20%7C%20aplay%20%7C%20ffplay-orange.svg">
-  <img alt="Packs: 12" src="https://img.shields.io/badge/packs-12-success.svg">
+  <img alt="Packs: 13" src="https://img.shields.io/badge/packs-13-success.svg">
   <a href="https://claude.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-D97757.svg"></a>
   <a href="https://github.com/openai/codex"><img alt="Codex CLI" src="https://img.shields.io/badge/Codex_CLI-supported-10A37F.svg"></a>
   <a href="https://github.com/Aider-AI/aider"><img alt="Aider" src="https://img.shields.io/badge/Aider-supported-7C3AED.svg"></a>
@@ -206,6 +206,8 @@ Five canonical events. Each maps to whatever native hook the tool provides.
 | `compact`      | Conversation context is about to be auto-summarized |
 
 Tools that don't natively distinguish all five (e.g. Codex, Aider) get partial coverage — usually just `stop`. That's fine; missing events are silently no-ops.
+
+> **Note:** Codex CLI currently emits no event for permission/approval prompts, so those are silent. Claude Code fires `Notification` for permission prompts and idle waits → mapped to the `notification` pool. See [`docs/codex.md`](docs/codex.md) for the upstream gap.
 
 Intentionally **unmapped** across all tools:
 
