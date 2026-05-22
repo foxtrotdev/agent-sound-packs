@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "agent-sound-packs",
+  "description": "Themed sound packs for AI coding agents. Short clips fire on lifecycle events (Stop / Notification / SubagentStop / SessionStart / PreCompact).",
+  "owner": {
+    "name": "foxtrotdev",
+    "url": "https://github.com/foxtrotdev"
+  },
+  "plugins": [
+    {
+      "name": "agent-sound-packs",
+      "description": "Drop-in audio feedback for Claude Code. 13+ themed packs (mortal-kombat, dbz, futurama, …). Volume + mute via config file.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
