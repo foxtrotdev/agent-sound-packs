@@ -1,0 +1,72 @@
+{
+  "name": "agent-sound-packs",
+  "description": "Themed sound packs that play short clips on Claude Code lifecycle events (Stop, Notification, SubagentStop, SessionStart, PreCompact). Auto-detects audio player (afplay/pw-play/paplay/aplay/ffplay/powershell). Volume + mute via ~/.config/agent-sound-packs/config.json or CCSP_VOLUME / CCSP_ENABLED env vars.",
+  "author": {
+    "name": "foxtrotdev",
+    "url": "https://github.com/foxtrotdev"
+  },
+  "homepage": "https://github.com/foxtrotdev/agent-sound-packs",
+  "license": "MIT",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CCSP_ROOT=\"${CLAUDE_PLUGIN_ROOT}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/play-random.sh\" session",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CCSP_ROOT=\"${CLAUDE_PLUGIN_ROOT}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/play-random.sh\" stop",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CCSP_ROOT=\"${CLAUDE_PLUGIN_ROOT}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/play-random.sh\" notification",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CCSP_ROOT=\"${CLAUDE_PLUGIN_ROOT}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/play-random.sh\" subagent",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CCSP_ROOT=\"${CLAUDE_PLUGIN_ROOT}\" \"${CLAUDE_PLUGIN_ROOT}/scripts/play-random.sh\" compact",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

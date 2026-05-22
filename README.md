@@ -112,6 +112,7 @@ Five canonical events (`stop` · `notification` · `subagent` · `session` · `c
 - [Features](#features)
 - [Requirements](#requirements)
 - [Install](#install)
+- [Configuration](#configuration)
 - [Tool integrations](#tool-integrations)
 - [Event model](#event-model)
 - [Quick usage](#quick-usage)
@@ -153,6 +154,19 @@ Five canonical events (`stop` · `notification` · `subagent` · `session` · `c
 
 ## Install
 
+Two paths. Pick one.
+
+### A) Claude Code plugin (one command, no settings.json editing)
+
+```text
+/plugin marketplace add foxtrotdev/agent-sound-packs
+/plugin install agent-sound-packs@agent-sound-packs
+```
+
+Hooks (Stop / Notification / SubagentStop / SessionStart / PreCompact) wire up automatically. Defaults to `mortal-kombat` pack. To change pack / volume / mute, create `~/.config/agent-sound-packs/config.json` — see [Configuration](#configuration). Pack-management scripts (`switch-pack.sh`, `add-pack.sh`) are not used in plugin mode; switching is done via the `pack` field in the config file.
+
+### B) Standalone install (full pack-management toolkit)
+
 ```bash
 git clone https://github.com/foxtrotdev/agent-sound-packs.git
 cd agent-sound-packs
@@ -178,6 +192,59 @@ jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.jso
 ```
 
 If your `~/.claude/settings.json` doesn't exist yet, just copy `~/.claude/sounds/suggested-hooks.json` to it.
+
+---
+
+## Configuration
+
+Volume, mute, and pack selection live in a single JSON file:
+
+```text
+~/.config/agent-sound-packs/config.json
+```
+
+(`$XDG_CONFIG_HOME/agent-sound-packs/config.json` if `XDG_CONFIG_HOME` is set.)
+
+```json
+{
+  "enabled": 1,
+  "volume": 70,
+  "pack": "mortal-kombat"
+}
+```
+
+| Key | Type | Default | Effect |
+|-----|------|---------|--------|
+| `enabled` | `0` \| `1` | `1` | `0` mutes all sounds. |
+| `volume` | int `0`–`100` | `100` | Mapped per player: `afplay -v 0..1`, `pw-play --volume 0..1`, `paplay --volume 0..65536`, `ffplay -volume 0..100`. `aplay` and PowerShell `SoundPlayer` ignore volume (no flag exists). |
+| `pack` | string | (none) | Overrides `$CCSP_ROOT/active-pack`. Useful in plugin mode where the install dir is read-only. Only `[a-zA-Z0-9._-]` allowed — paths and shell metacharacters silently rejected. |
+
+### Environment variables (override config file)
+
+| Var | Equivalent |
+|-----|------------|
+| `CCSP_ENABLED=0` | mute |
+| `CCSP_VOLUME=50` | volume |
+| `CCSP_DEBOUNCE_MS=2000` | min ms between plays |
+| `CCSP_PLAYER="ffplay -nodisp -autoexit"` | force a specific player |
+| `CCSP_ROOT=/path` | install dir (plugin install sets this to `${CLAUDE_PLUGIN_ROOT}`) |
+
+Precedence: **env var > config file > built-in default**. The config file is parsed safely with `grep` (no `jq` or `source`) — only digits and a strict character class are accepted, so a hand-edited or corrupted config cannot execute code.
+
+### Quick recipes
+
+```bash
+# Mute for the current shell only
+CCSP_ENABLED=0 claude
+
+# Half volume permanently
+mkdir -p ~/.config/agent-sound-packs
+printf '{"enabled":1,"volume":50}\n' > ~/.config/agent-sound-packs/config.json
+
+# Switch pack without touching the install dir (plugin mode)
+printf '{"enabled":1,"volume":70,"pack":"futurama"}\n' \
+  > ~/.config/agent-sound-packs/config.json
+```
 
 ---
 

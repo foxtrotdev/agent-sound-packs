@@ -96,6 +96,22 @@ JSON
 echo ""
 echo "  hooks JSON written: $HOOKS_FILE"
 
+# Seed a default config file if absent, so users have a discoverable knob.
+CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/agent-sound-packs"
+CFG_FILE="$CFG_DIR/config.json"
+if [ ! -f "$CFG_FILE" ]; then
+  mkdir -p "$CFG_DIR"
+  cat > "$CFG_FILE" <<'JSON'
+{
+  "_comment": "agent-sound-packs config. enabled: 0|1, volume: 0..100, pack: pack-name (overrides active-pack file).",
+  "enabled": 1,
+  "volume": 100
+}
+JSON
+  echo ""
+  echo "  config seeded: $CFG_FILE"
+fi
+
 echo ""
 echo "Done. Next steps:"
 echo "  1) Test playback:  $DEST/scripts/test-sounds.sh"
@@ -106,3 +122,22 @@ echo "  3) Switch packs:        $DEST/switch-pack.sh <pack-name>"
 echo "  4) Browse remote packs: $DEST/scripts/list-remote.sh"
 echo "  5) Install a pack:      $DEST/scripts/add-pack.sh <name>"
 echo "  6) Update packs:        $DEST/scripts/update-pack.sh --all"
+echo ""
+echo "Config (volume + mute):"
+echo "  File:   $CFG_FILE       → { \"enabled\": 0|1, \"volume\": 0..100 }"
+echo "  Env:    CCSP_ENABLED=0  (mute)   CCSP_VOLUME=50  (half)"
+echo "  Env > config file. Both honored by play-random.sh."
+
+# First-run intro: play one sound from active pack so user hears it works.
+# Skipped on --no-intro (CI / non-interactive re-runs).
+WANT_INTRO=1
+for arg in "$@"; do
+  [ "$arg" = "--no-intro" ] && WANT_INTRO=0
+done
+if [ "$WANT_INTRO" = 1 ] && [ -t 1 ]; then
+  echo ""
+  echo "Playing intro from active pack '$(cat "$DEST/active-pack" 2>/dev/null)' ..."
+  CCSP_ROOT="$DEST" CCSP_DEBOUNCE_MS=0 "$DEST/play-random.sh" session 2>/dev/null || true
+  # Give the backgrounded player a moment before the shell exits.
+  sleep 1 || true
+fi

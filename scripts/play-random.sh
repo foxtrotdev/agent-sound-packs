@@ -9,11 +9,60 @@
 # from POOL_<EVENT>=(...) blocks. Any shell code, command substitution,
 # pipes, redirects, or paths with slashes are silently ignored.
 # This means a malicious / corrupted pool.conf cannot execute code.
+#
+# CONFIG (precedence: env var > config file > built-in default):
+#   CCSP_ENABLED      1|0           mute switch (default 1)
+#   CCSP_VOLUME       0..100        playback volume (default 100; not all players honor)
+#   CCSP_DEBOUNCE_MS  int           debounce window (default 2000)
+#   CCSP_PLAYER       cmd           override audio player
+#   CCSP_ROOT         path          install dir (default ~/.claude/sounds)
+#
+# Config file (JSON, optional):
+#   ${XDG_CONFIG_HOME:-$HOME/.config}/agent-sound-packs/config.json
+#   { "enabled": 1, "volume": 70 }
+# Only digits are accepted; no shell eval. Missing file = use env or defaults.
 
 set -u
 
 ROOT="${CCSP_ROOT:-$HOME/.claude/sounds}"
-PACK=$(cat "$ROOT/active-pack" 2>/dev/null || echo "mortal-kombat")
+CFG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/agent-sound-packs"
+CFG_FILE="$CFG_DIR/config.json"
+
+# Safe JSON int extractor: returns digits only, ignores quoted/string values.
+# Pattern: "key" : <digits>   — anything else is dropped.
+_cfg_int() {
+  [ -f "$CFG_FILE" ] || return 0
+  grep -oE "\"$1\"[[:space:]]*:[[:space:]]*[0-9]+" "$CFG_FILE" 2>/dev/null \
+    | grep -oE '[0-9]+$' | head -1
+}
+
+# Safe JSON string extractor: only [a-zA-Z0-9._-] characters, max 64 chars.
+# Pattern: "key" : "<safe-chars>"   — anything else is dropped.
+_cfg_str() {
+  [ -f "$CFG_FILE" ] || return 0
+  grep -oE "\"$1\"[[:space:]]*:[[:space:]]*\"[a-zA-Z0-9._-]{1,64}\"" "$CFG_FILE" 2>/dev/null \
+    | grep -oE '"[a-zA-Z0-9._-]{1,64}"$' | tr -d '"' | head -1
+}
+
+# Resolve config: env > file > default.
+CFG_ENABLED=$(_cfg_int enabled)
+CFG_VOLUME=$(_cfg_int volume)
+CFG_PACK=$(_cfg_str pack)
+
+ENABLED="${CCSP_ENABLED:-${CFG_ENABLED:-1}}"
+VOLUME="${CCSP_VOLUME:-${CFG_VOLUME:-100}}"
+
+# Mute switch.
+case "$ENABLED" in 0|false|no|off) exit 0 ;; esac
+
+# Clamp volume to 0..100.
+case "$VOLUME" in *[!0-9]*|"") VOLUME=100 ;; esac
+[ "$VOLUME" -gt 100 ] 2>/dev/null && VOLUME=100
+
+# Pack resolution: config "pack" > $ROOT/active-pack file > "mortal-kombat".
+# Config-file pack lets plugin-installed users switch packs without writing
+# to the (often read-only) plugin install dir.
+PACK="${CFG_PACK:-$(cat "$ROOT/active-pack" 2>/dev/null || echo "mortal-kombat")}"
 DIR="$ROOT/packs/$PACK"
 CONF="$DIR/pool.conf"
 
@@ -79,14 +128,23 @@ FILE="$DIR/$pick"
 # Update debounce lock — only when we actually play.
 echo "$NOW_MS" > "$LOCK" 2>/dev/null || true
 
+# Volume mapping per player. 0..100 → player-native scale.
+#   afplay  -v 0.0..1.0          → VOLUME/100 (awk for float)
+#   pw-play --volume 0.0..1.0    → VOLUME/100
+#   paplay  --volume 0..65536    → VOLUME*655 (rounded)
+#   ffplay  -volume 0..100       → VOLUME (direct)
+#   aplay / powershell           → no volume support, ignored
+VOL_FLOAT=$(awk -v v="$VOLUME" 'BEGIN { printf "%.3f", v/100 }')
+VOL_PAPLAY=$(( VOLUME * 65536 / 100 ))
+
 # Auto-detect audio player. Backgrounded so the hook returns fast.
 # Override with CCSP_PLAYER="my-player" to skip detection.
 if   [ -n "${CCSP_PLAYER:-}" ];                 then $CCSP_PLAYER "$FILE" &
-elif command -v afplay         >/dev/null 2>&1; then afplay  "$FILE" &
-elif command -v pw-play        >/dev/null 2>&1; then pw-play "$FILE" &
-elif command -v paplay         >/dev/null 2>&1; then paplay  "$FILE" &
+elif command -v afplay         >/dev/null 2>&1; then afplay  -v "$VOL_FLOAT" "$FILE" &
+elif command -v pw-play        >/dev/null 2>&1; then pw-play --volume="$VOL_FLOAT" "$FILE" &
+elif command -v paplay         >/dev/null 2>&1; then paplay  --volume="$VOL_PAPLAY" "$FILE" &
 elif command -v aplay          >/dev/null 2>&1; then aplay -q "$FILE" &
-elif command -v ffplay         >/dev/null 2>&1; then ffplay -nodisp -autoexit -loglevel quiet "$FILE" &
+elif command -v ffplay         >/dev/null 2>&1; then ffplay -nodisp -autoexit -loglevel quiet -volume "$VOLUME" "$FILE" &
 elif command -v powershell.exe >/dev/null 2>&1; then
   WPATH=$(wslpath -w "$FILE" 2>/dev/null || echo "$FILE")
   powershell.exe -c "(New-Object Media.SoundPlayer '$WPATH').PlaySync()" &
