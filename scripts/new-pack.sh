@@ -6,6 +6,14 @@
 
 ROOT="${CCSP_ROOT:-$HOME/.claude/sounds}"
 NAME="${1:?usage: new-pack.sh <pack-name>}"
+
+# Pack name is used to build a path under packs/ — reject anything that could
+# escape the directory (../, slashes, shell metachars). Same whitelist add-pack.sh uses.
+case "$NAME" in
+  *[!a-zA-Z0-9_-]*|"")
+    echo "Invalid pack name: '$NAME' (allowed: a-z A-Z 0-9 _ - )" >&2; exit 1 ;;
+esac
+
 DIR="$ROOT/packs/$NAME"
 
 if [ -d "$DIR" ]; then

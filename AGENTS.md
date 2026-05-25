@@ -13,6 +13,7 @@ This repo provides audible feedback for Claude Code lifecycle events. The archit
 ├── install.sh            installs into $CCSP_ROOT (default ~/.claude/sounds)
 ├── scripts/
 │   ├── play-random.sh    hook entrypoint; called by Claude Code on events
+│   ├── sound.sh          CLI dispatcher: routes subcommands to the scripts below
 │   ├── switch-pack.sh    CLI: read/write ~/.claude/sounds/active-pack
 │   ├── transcribe.sh     whisper.cpp helper for pack curation
 │   └── test-sounds.sh    QA: play one from each event pool

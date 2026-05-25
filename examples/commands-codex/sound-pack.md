@@ -1,1 +1,1 @@
-Run the shell command `~/.claude/sounds/switch-pack.sh $1` and report the result in one line. No commentary — just the output (current pack, available packs, or "Active pack: X" confirmation).
+Run the shell command `bash "$HOME/.claude/sounds/scripts/sound.sh" $ARGUMENTS` (subcommands: list, switch <name>, update [name|--all], test, new <name>, add <name>, remote, validate <name>, help) and report the result concisely — just the relevant output (current/active pack, catalog table, or a confirmation). No commentary.
