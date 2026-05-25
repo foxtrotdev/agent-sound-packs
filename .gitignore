@@ -14,5 +14,8 @@ Thumbs.db
 *.log
 *.bak
 
+# Runtime state (created when running scripts with CCSP_ROOT=repo)
+/active-pack
+
 # Personal launcher (hardcoded user path)
 claude.command

@@ -22,6 +22,13 @@ if [ -z "$1" ]; then
   exit 0
 fi
 
+# Name is written to active-pack and later joined into a path by play-random.sh —
+# reject traversal / metachars so the active pack can't point outside packs/.
+case "$1" in
+  *[!a-zA-Z0-9_-]*)
+    echo "Invalid pack name: '$1' (allowed: a-z A-Z 0-9 _ - )" >&2; exit 1 ;;
+esac
+
 if [ ! -d "$PACKS_DIR/$1" ]; then
   echo "Pack not found: $1" >&2
   echo "Looked in: $PACKS_DIR/$1" >&2

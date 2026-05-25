@@ -7,6 +7,13 @@
 
 CCSP_ROOT_DEFAULT="${CCSP_ROOT:-$HOME/.claude/sounds}"
 
+# Single umbrella — same subcommands as the /sound-pack slash command:
+#   sound | sound switch <name> | sound update | sound test | sound new <name>
+#   sound add <name> | sound remote | sound validate <name> | sound help
+sound() {
+  CCSP_ROOT="$CCSP_ROOT_DEFAULT" "$CCSP_ROOT_DEFAULT/scripts/sound.sh" "$@"
+}
+
 # Quick pack switch / list
 sp() {
   "$CCSP_ROOT_DEFAULT/switch-pack.sh" "$@"

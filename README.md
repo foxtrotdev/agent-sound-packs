@@ -304,14 +304,21 @@ Intentionally **unmapped** across all tools:
 
 ### From inside an AI coding agent (slash commands)
 
-Same four commands available across multiple agents — pick the install for your tool:
+One command, `/sound-pack`, with subcommands — so you remember one verb, not four:
 
 | Command | What it does |
 |---------|--------------|
-| `/sound-pack` | List packs + show active |
-| `/sound-pack <name>` | Switch to pack `<name>` |
-| `/sound-test` | Play one clip from each event pool of active pack |
-| `/sound-new <name>` | Scaffold a new pack folder with a `pool.conf` template |
+| `/sound-pack` (or `list`) | List packs + show active |
+| `/sound-pack switch <name>` | Switch to pack `<name>` |
+| `/sound-pack update [name\|--all]` | Refresh installed packs from source |
+| `/sound-pack test` | Play one clip from each event pool of active pack |
+| `/sound-pack new <name>` | Scaffold a new pack folder with a `pool.conf` template |
+| `/sound-pack add <name>` | Install a pack from the catalog / a git repo |
+| `/sound-pack remote` | Browse the official pack catalog |
+| `/sound-pack validate <name>` | Check a pack's `pool.conf` + wavs |
+| `/sound-pack help` | Show all subcommands |
+
+`/sound-pack <existing-pack-name>` still works as a shortcut for `switch`.
 
 Install per agent:
 
