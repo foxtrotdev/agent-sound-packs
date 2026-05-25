@@ -106,6 +106,14 @@
       "voice": false,
       "tags": ["memes", "viral", "stingers"],
       "wav_count": 16
+    },
+    {
+      "name": "peon-pl",
+      "description": "Warcraft III Orc Peon voice lines, Polish dub (\"Praca, praca!\", \"Gotów do pracy!\", \"Czego ty chcieć?\").",
+      "language": "pl",
+      "voice": true,
+      "tags": ["games", "rts", "warcraft", "voice", "polish"],
+      "wav_count": 19
     }
   ]
 }
