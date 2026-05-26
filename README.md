@@ -52,7 +52,7 @@ Type these two lines inside Claude Code:
 ```
 
 Done. Sounds wire up automatically and the next reply ends with one. Starts on the
-`mortal-kombat` pack — change it any time (see [Use it](#use-it)).
+`peon-en` pack (a Warcraft III orc peon) — change it any time (see [Use it](#use-it)).
 
 ### Codex CLI
 
@@ -64,11 +64,12 @@ cd agent-sound-packs
 ./install.sh
 ```
 
-Then add this to `~/.codex/config.toml` (create the file if it doesn't exist),
-replacing `YOUR_USER` with your username:
+Then add the `notify` line to `~/.codex/config.toml`. Codex needs an absolute path
+and TOML won't expand `$HOME` — so let the shell write it for you (no username to
+type):
 
-```toml
-notify = ["bash", "/Users/YOUR_USER/.claude/sounds/scripts/integrations/codex-notify.sh"]
+```bash
+echo "notify = [\"bash\", \"$HOME/.claude/sounds/scripts/integrations/codex-notify.sh\"]" >> ~/.codex/config.toml
 ```
 
 Restart Codex. You'll get a "task done" chime on each turn. (Codex only exposes the
@@ -92,6 +93,8 @@ Inside your agent, one slash command does everything:
 |---------|--------------|
 | `/sound-pack` | List packs + show the active one |
 | `/sound-pack switch <name>` | Switch theme |
+| `/sound-pack volume <0-100>` | Set playback volume |
+| `/sound-pack mute` · `unmute` | Silence / re-enable all sounds |
 | `/sound-pack test` | Play one clip from each event |
 | `/sound-pack add <name>` | Install another pack from the catalog |
 | `/sound-pack remote` | Browse the catalog |
@@ -115,8 +118,10 @@ Or source `~/.claude/sounds/scripts/aliases.sh` from your shell rc for `sp`, `sp
 
 ### Volume & mute
 
-Mute, set volume, or pin a pack in one small file —
-`~/.config/agent-sound-packs/config.json`:
+Easiest: `/sound-pack volume 70`, `/sound-pack mute`, `/sound-pack unmute` (or the
+`sp` alias). These write the config file for you.
+
+Prefer editing by hand? It all lives in `~/.config/agent-sound-packs/config.json`:
 
 ```json
 { "enabled": 1, "volume": 70, "pack": "futurama" }

@@ -26,11 +26,14 @@ Workarounds, none clean:
    ```bash
    ./install.sh
    ```
-2. Edit `~/.codex/config.toml` (create if missing) and add:
-   ```toml
-   notify = ["bash", "/Users/YOUR_USER/.claude/sounds/scripts/integrations/codex-notify.sh"]
+2. Add the `notify` line to `~/.codex/config.toml`. Codex execs the program
+   directly (no shell), so the path must be absolute — TOML won't expand `$HOME`.
+   Let the shell fill it in for you instead of typing your username:
+   ```bash
+   echo "notify = [\"bash\", \"$HOME/.claude/sounds/scripts/integrations/codex-notify.sh\"]" >> ~/.codex/config.toml
    ```
-   Replace `YOUR_USER` with your macOS username, or point at wherever `$CCSP_ROOT` resolves.
+   (`$HOME` expands at write time, so the file ends up with the real absolute
+   path. Already have a `notify =` line? Replace it instead of appending.)
 3. (Optional) Drop your `.wav` files into `~/.claude/sounds/packs/<pack-name>/`.
 4. Restart Codex CLI to pick up the new config.
 

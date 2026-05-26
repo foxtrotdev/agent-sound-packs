@@ -8,6 +8,7 @@ Thanks for considering a contribution. The project is deliberately small — mos
 - **Keep it bash 3.2 compatible.** macOS ships bash 3.2. No associative arrays. No `mapfile`. Run `bash -n` on every script you touch.
 - **Keep hooks fast.** Hook scripts run on every event fire. Anything > 50ms is a regression. Background long work with `&`.
 - **No runtime dependencies.** No Node, Python, Ruby, jq. Plain POSIX/bash + standard macOS/Linux utilities only.
+- **No AI co-author trailers.** Commit messages must not credit an AI assistant (`Co-Authored-By: Claude/Codex/…`). Enable the guard once per clone: `git config core.hooksPath .githooks` — the `pre-push` hook then rejects any such commit before it leaves your machine.
 - **Don't break the event enum.** `stop | notification | subagent | session | compact`. Adding a new event is a coordinated change across `play-random.sh`, every pack's `pool.conf`, `examples/settings.json`, `README.md`, `AGENTS.md`, and every `docs/<tool>.md`.
 
 ## Adding a new pack

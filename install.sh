@@ -69,10 +69,10 @@ for pack_dir in "$SRC_DIR/packs"/*/; do
   echo "  pack: $name (pool.conf + $wav_count wavs)"
 done
 
-# Default active pack — prefer mortal-kombat if present, else first
+# Default active pack — prefer peon-en if present, else first
 if [ ! -f "$DEST/active-pack" ]; then
-  if [ -d "$DEST/packs/mortal-kombat" ]; then
-    echo "mortal-kombat" > "$DEST/active-pack"
+  if [ -d "$DEST/packs/peon-en" ]; then
+    echo "peon-en" > "$DEST/active-pack"
   else
     ls "$DEST/packs" | head -1 > "$DEST/active-pack"
   fi
