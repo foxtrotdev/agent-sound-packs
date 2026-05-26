@@ -1,24 +1,26 @@
 #!/usr/bin/env bash
 # install.sh — Install agent-sound-packs into ~/.claude/sounds/ (or $CCSP_ROOT).
-# Copies scripts, pool.conf, transcripts.txt, and any *.wav bundled in the repo.
+# Copies scripts, pool.conf, transcripts.txt, and any bundled audio
+# (*.wav *.mp3 *.ogg *.flac) in the repo.
 # Does NOT patch settings.json automatically — prints suggested hook config.
 #
 # Flags:
-#   --no-wavs   Skip copying bundled *.wav files (for re-runs that only refresh configs).
+#   --no-wavs   Skip copying bundled audio files (for re-runs that only refresh configs).
+#               (--no-audio is accepted as an alias.)
 
 set -e
 SRC_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEST="${CCSP_ROOT:-$HOME/.claude/sounds}"
 
-COPY_WAVS=1
+COPY_AUDIO=1
 for arg in "$@"; do
-  [ "$arg" = "--no-wavs" ] && COPY_WAVS=0
+  case "$arg" in --no-wavs|--no-audio) COPY_AUDIO=0 ;; esac
 done
 
 echo "Installing agent-sound-packs"
 echo "  source: $SRC_DIR"
 echo "  dest:   $DEST"
-echo "  wavs:   $([ "$COPY_WAVS" = 1 ] && echo "yes" || echo "no (--no-wavs)")"
+echo "  audio:  $([ "$COPY_AUDIO" = 1 ] && echo "yes" || echo "no (--no-audio)")"
 echo ""
 
 mkdir -p "$DEST/scripts" "$DEST/packs"
@@ -50,12 +52,14 @@ for pack_dir in "$SRC_DIR/packs"/*/; do
   mkdir -p "$DEST/packs/$name"
   [ -f "$pack_dir/pool.conf" ]       && cp "$pack_dir/pool.conf"       "$DEST/packs/$name/"
   [ -f "$pack_dir/transcripts.txt" ] && cp "$pack_dir/transcripts.txt" "$DEST/packs/$name/"
-  wav_count=0
-  if [ "$COPY_WAVS" = 1 ]; then
-    for w in "$pack_dir"*.wav; do
-      [ -f "$w" ] || continue
-      cp "$w" "$DEST/packs/$name/"
-      wav_count=$((wav_count + 1))
+  audio_count=0
+  if [ "$COPY_AUDIO" = 1 ]; then
+    for ext in wav mp3 ogg flac; do
+      for f in "$pack_dir"*."$ext"; do
+        [ -f "$f" ] || continue
+        cp "$f" "$DEST/packs/$name/"
+        audio_count=$((audio_count + 1))
+      done
     done
   fi
   # Write .source so update-pack.sh can later refresh this pack from upstream.
@@ -66,7 +70,7 @@ for pack_dir in "$SRC_DIR/packs"/*/; do
       echo "installed=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
     } > "$DEST/packs/$name/.source"
   fi
-  echo "  pack: $name (pool.conf + $wav_count wavs)"
+  echo "  pack: $name (pool.conf + $audio_count audio files)"
 done
 
 # Default active pack — prefer peon-en if present, else first

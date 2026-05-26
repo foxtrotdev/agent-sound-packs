@@ -120,9 +120,9 @@ commit=$SHA
 fetched_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 EOF
 
-WAVS=$(find "$DEST" -maxdepth 1 -name '*.wav' | wc -l | tr -d ' ')
+AUDIO=$(find "$DEST" -maxdepth 1 \( -name '*.wav' -o -name '*.mp3' -o -name '*.ogg' -o -name '*.flac' \) | wc -l | tr -d ' ')
 echo ""
-echo "✓ Installed: $NAME ($WAVS sound files)"
+echo "✓ Installed: $NAME ($AUDIO sound files)"
 echo "  Location:  $DEST"
 echo "  Source:    $REPO @ ${SHA:0:7}"
 echo ""
