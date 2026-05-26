@@ -7,7 +7,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Platform: macOS / Linux / WSL" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-lightgrey.svg">
-  <img alt="Packs: 14" src="https://img.shields.io/badge/packs-14-success.svg">
+  <img alt="Packs: 15" src="https://img.shields.io/badge/packs-15-success.svg">
   <a href="https://claude.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-D97757.svg"></a>
   <a href="https://github.com/openai/codex"><img alt="Codex CLI" src="https://img.shields.io/badge/Codex_CLI-supported-10A37F.svg"></a>
 </p>
@@ -24,7 +24,7 @@ Kombat, Futurama, a Warcraft peon — and you *hear* what your agent is doing wi
 watching the screen.
 
 A **pack** is a theme: a folder of short audio clips. You can switch packs in one
-command, or make your own. 14 packs ship in the box.
+command, or make your own. 15 packs ship in the box.
 
 Sounds fire on these moments (**events**):
 
