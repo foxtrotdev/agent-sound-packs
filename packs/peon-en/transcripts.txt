@@ -1,0 +1,18 @@
+file	transcript
+01_I_can_do_that.mp3	I can do that.
+02_Be_happy_to.mp3	Be happy to!
+03_Something_need_doing.mp3	Something need doing?
+04_What_do_you_want.mp3	What do you want?
+05_Work_work.mp3	Work, work.
+06_Okie_dokie.mp3	Okie dokie.
+07_Ready_to_work.mp3	Ready to work!
+08_Huh.mp3	Huh?
+09_Okay.mp3	Okay.
+10_Yes.mp3	Yes.
+11_Get_them.mp3	Get them!
+12_Ill_try.mp3	I'll try!
+13_What.mp3	What?
+14_Me_busy.mp3	Me busy!
+15_Leave_me_alone.mp3	Leave me alone!
+16_No_time_for_play.mp3	No time for play!
+17_Me_not_that_kind_of_orc.mp3	Me not that kind of orc!
