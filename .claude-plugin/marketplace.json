@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "agent-sound-packs",
-      "description": "Drop-in audio feedback for Claude Code. 13+ themed packs (mortal-kombat, dbz, futurama, …). Volume + mute via config file.",
+      "description": "Drop-in audio feedback for Claude Code. 15 themed packs (peon-en, mortal-kombat, dbz, futurama, …). Volume + mute via config file.",
       "source": "./",
       "category": "productivity"
     }

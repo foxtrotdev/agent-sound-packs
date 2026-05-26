@@ -7,7 +7,8 @@ Stubs and pointers for coding agents not yet officially supported. Contributions
 [Aider](https://github.com/Aider-AI/aider) supports a `--notifications-command` flag and config-file option. Map it to the `stop` event:
 
 ```yaml
-# ~/.aider.conf.yml
+# ~/.aider.conf.yml — use an absolute path. Print yours with:
+#   echo "$HOME/.claude/sounds/play-random.sh stop"
 notifications-command: /Users/YOUR_USER/.claude/sounds/play-random.sh stop
 ```
 
@@ -19,7 +20,8 @@ These tools don't currently expose user-defined post-turn hooks. Track upstream 
 
 ## Generic agent
 
-For any agent that lets you configure a "post-turn" shell command, wire it to:
+For any agent that lets you configure a "post-turn" shell command, wire it to an
+absolute path (print yours with `echo "$HOME/.claude/sounds/play-random.sh stop"`):
 
 ```
 /Users/YOUR_USER/.claude/sounds/play-random.sh stop

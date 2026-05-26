@@ -8,8 +8,9 @@
 # This adapter maps Codex event types to agent-sound-packs events and calls
 # play-random.sh.
 #
-# Install into ~/.codex/config.toml:
-#   notify = ["bash", "/Users/YOU/.claude/sounds/scripts/integrations/codex-notify.sh"]
+# Install into ~/.codex/config.toml (absolute path required — Codex execs the
+# program directly, so $HOME is NOT expanded in TOML; let the shell bake it in):
+#   echo "notify = [\"bash\", \"$HOME/.claude/sounds/scripts/integrations/codex-notify.sh\"]" >> ~/.codex/config.toml
 
 ROOT="${CCSP_ROOT:-$HOME/.claude/sounds}"
 PLAYER="$ROOT/play-random.sh"

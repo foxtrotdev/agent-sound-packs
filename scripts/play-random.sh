@@ -59,10 +59,10 @@ case "$ENABLED" in 0|false|no|off) exit 0 ;; esac
 case "$VOLUME" in *[!0-9]*|"") VOLUME=100 ;; esac
 [ "$VOLUME" -gt 100 ] 2>/dev/null && VOLUME=100
 
-# Pack resolution: config "pack" > $ROOT/active-pack file > "mortal-kombat".
+# Pack resolution: config "pack" > $ROOT/active-pack file > "peon-en".
 # Config-file pack lets plugin-installed users switch packs without writing
 # to the (often read-only) plugin install dir.
-PACK="${CFG_PACK:-$(cat "$ROOT/active-pack" 2>/dev/null || echo "mortal-kombat")}"
+PACK="${CFG_PACK:-$(cat "$ROOT/active-pack" 2>/dev/null || echo "peon-en")}"
 DIR="$ROOT/packs/$PACK"
 CONF="$DIR/pool.conf"
 

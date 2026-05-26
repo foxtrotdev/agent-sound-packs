@@ -12,6 +12,8 @@
 #   add <name|git-url>      Install a pack from the catalog or a git repo.
 #   remote                  Browse the official pack catalog (nothing downloaded).
 #   validate <name>         Check a pack's pool.conf + wav files.
+#   volume <0-100>          Set playback volume (writes config.json).
+#   mute | unmute           Silence / re-enable all sounds.
 #   help                    Show this help.
 #
 # Backward compat: `sound.sh <pack-name>` (a bare existing pack) switches to it.
@@ -40,7 +42,26 @@ run() {
   CCSP_ROOT="$ROOT" bash "$s" "$@"
 }
 
-usage() { sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,19p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+
+CFG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/agent-sound-packs/config.json"
+
+# cfg_get <key> — print the value (number or bare string), empty if unset.
+cfg_get() {
+  [ -f "$CFG_FILE" ] || return 0
+  grep -oE "\"$1\"[[:space:]]*:[[:space:]]*(\"[^\"]*\"|[0-9]+)" "$CFG_FILE" 2>/dev/null \
+    | head -1 | sed -E 's/.*:[[:space:]]*//; s/"//g' || true
+}
+
+# cfg_set <enabled> <volume> [pack] — rewrite config.json (same shape play-random reads).
+cfg_set() {
+  mkdir -p "$(dirname "$CFG_FILE")"
+  {
+    printf '{\n  "enabled": %s,\n  "volume": %s' "$1" "$2"
+    [ -n "${3:-}" ] && printf ',\n  "pack": "%s"' "$3"
+    printf '\n}\n'
+  } > "$CFG_FILE"
+}
 
 sub="${1-}"
 [ $# -gt 0 ] && shift || true
@@ -61,6 +82,21 @@ case "$sub" in
     else
       run validate-pack.sh "$@"
     fi ;;
+  volume|vol)
+    v="${1:-}"
+    case "$v" in ''|*[!0-9]*) echo "usage: sound.sh volume <0-100>" >&2; exit 1 ;; esac
+    if [ "$v" -gt 100 ]; then v=100; fi
+    e="$(cfg_get enabled)"; p="$(cfg_get pack)"
+    cfg_set "${e:-1}" "$v" "$p"
+    echo "volume set to $v" ;;
+  mute)
+    vv="$(cfg_get volume)"; p="$(cfg_get pack)"
+    cfg_set 0 "${vv:-100}" "$p"
+    echo "muted — all sounds off" ;;
+  unmute)
+    vv="$(cfg_get volume)"; p="$(cfg_get pack)"
+    cfg_set 1 "${vv:-100}" "$p"
+    echo "unmuted" ;;
   help|-h|--help)              usage ;;
   *)
     # Backward compat: bare existing pack name → switch to it.
