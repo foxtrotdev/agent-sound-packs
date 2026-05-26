@@ -114,6 +114,14 @@
       "voice": true,
       "tags": ["games", "rts", "warcraft", "voice", "polish"],
       "wav_count": 19
+    },
+    {
+      "name": "peon-en",
+      "description": "Warcraft III Orc Peon voice lines, English original (\"Work, work.\", \"Ready to work!\", \"Something need doing?\").",
+      "language": "en",
+      "voice": true,
+      "tags": ["games", "rts", "warcraft", "voice", "english"],
+      "wav_count": 17
     }
   ]
 }
