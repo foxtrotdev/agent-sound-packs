@@ -5,8 +5,12 @@
 # before touching anything. Copies scripts, pool.conf, transcripts.txt, and any
 # bundled audio (*.wav *.mp3 *.ogg *.flac).
 #
+# On a fresh install it lets you pick the starting pack with ↑/↓ arrows
+# (peon-en pre-selected). Non-interactive runs default to peon-en.
+#
 # Flags:
-#   -y, --yes      Skip the confirmation prompt (non-interactive / CI).
+#   -y, --yes      Skip the confirmation prompt + pack picker (non-interactive / CI).
+#   --pack=NAME    Preset the active pack, skip the picker.
 #   --no-audio     Skip copying audio files; refresh configs/scripts only.
 #                  (--no-wavs is accepted as an alias.)
 #   --no-intro     Don't play a sound at the end.
@@ -21,12 +25,14 @@ DEST="${CCSP_ROOT:-$HOME/.claude/sounds}"
 COPY_AUDIO=1
 ASSUME_YES=0
 WANT_INTRO=1
+PRESET_PACK=""
 for arg in "$@"; do
   case "$arg" in
     -y|--yes)            ASSUME_YES=1 ;;
+    --pack=*)            PRESET_PACK="${arg#*=}" ;;
     --no-audio|--no-wavs) COPY_AUDIO=0 ;;
     --no-intro)          WANT_INTRO=0 ;;
-    -h|--help)           sed -n '2,16p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h|--help)           sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) printf 'install.sh: unknown flag %s (try --help)\n' "$arg" >&2; exit 2 ;;
   esac
 done
@@ -53,13 +59,44 @@ count_audio() {
   printf '%s' "$n"
 }
 
+# Arrow-key pack picker. Args: pack names. Sets REPLY_PACK to the chosen one.
+# ↑/↓ or k/j to move, Enter to pick. Defaults the cursor to $DEFAULT_PACK.
+choose_pack() {
+  local items=("$@") n=$# sel=0 i key rest
+  for i in $(seq 0 $((n - 1))); do
+    [ "${items[$i]}" = "$DEFAULT_PACK" ] && sel=$i
+  done
+  printf '%s  Pick the starting pack — %s↑/↓%s move, %sEnter%s select:%s\n' "$B" "$C" "$X$B" "$C" "$X$B" "$X"
+  printf '\033[?25l'  # hide cursor
+  while true; do
+    for i in $(seq 0 $((n - 1))); do
+      if [ "$i" -eq "$sel" ]; then
+        printf '  %s▸ %s%s\033[K\n' "$G$B" "${items[$i]}" "$X"
+      else
+        printf '    %s%s%s\033[K\n' "$D" "${items[$i]}" "$X"
+      fi
+    done
+    IFS= read -rsn1 key
+    if [ "$key" = $'\033' ]; then IFS= read -rsn2 rest; key="$key$rest"; fi
+    case "$key" in
+      $'\033[A'|k) sel=$(( (sel - 1 + n) % n )) ;;
+      $'\033[B'|j) sel=$(( (sel + 1) % n )) ;;
+      '') break ;;   # Enter
+    esac
+    printf '\033[%dA' "$n"   # move cursor back up to repaint
+  done
+  printf '\033[?25h'  # restore cursor
+  REPLY_PACK="${items[$sel]}"
+}
+
 # ---- gather facts (read-only) -----------------------------------------------
-PACK_COUNT=0; AUDIO_TOTAL=0; PACK_LINES=""
+PACK_COUNT=0; AUDIO_TOTAL=0; PACK_LINES=""; PACK_NAMES=""
 for pack_dir in "$SRC_DIR/packs"/*/; do
   [ -d "$pack_dir" ] || continue
   name=$(basename "$pack_dir")
   n=$(count_audio "$pack_dir")
   PACK_COUNT=$((PACK_COUNT + 1)); AUDIO_TOTAL=$((AUDIO_TOTAL + n))
+  PACK_NAMES="$PACK_NAMES $name"
   PACK_LINES="$PACK_LINES$name|$n
 "
 done
@@ -103,6 +140,10 @@ else
 fi
 if [ -f "$DEST/active-pack" ]; then
   info "Active pack:   keep current ($(cat "$DEST/active-pack" 2>/dev/null))"
+elif [ -n "$PRESET_PACK" ]; then
+  info "Active pack:   set to ${B}$PRESET_PACK${X} (--pack)"
+elif [ "$ASSUME_YES" != 1 ] && [ -t 0 ]; then
+  info "Active pack:   ${B}pick with arrows below${X} (default $DEFAULT_PACK)"
 else
   info "Active pack:   set to ${B}$DEFAULT_PACK${X}"
 fi
@@ -123,6 +164,24 @@ if [ "$ASSUME_YES" != 1 ] && [ -t 0 ]; then
   read -r answer || answer=""
   case "$answer" in
     n|N|no|NO|No) printf '%sAborted — nothing was changed.%s\n' "$Y" "$X"; exit 0 ;;
+  esac
+fi
+
+# ---- pick the starting pack (fresh installs only) ---------------------------
+CHOSEN_PACK=""
+if [ ! -f "$DEST/active-pack" ]; then
+  if [ -n "$PRESET_PACK" ]; then
+    CHOSEN_PACK="$PRESET_PACK"
+  elif [ "$ASSUME_YES" != 1 ] && [ -t 0 ]; then
+    head "Starting pack"
+    choose_pack $PACK_NAMES
+    CHOSEN_PACK="$REPLY_PACK"
+  else
+    CHOSEN_PACK="$DEFAULT_PACK"
+  fi
+  case " $PACK_NAMES " in
+    *" $CHOSEN_PACK "*) : ;;
+    *) printf '  %s!%s pack "%s" not found — using %s\n' "$Y" "$X" "$CHOSEN_PACK" "$DEFAULT_PACK"; CHOSEN_PACK="$DEFAULT_PACK" ;;
   esac
 fi
 
@@ -175,9 +234,11 @@ for pack_dir in "$SRC_DIR/packs"/*/; do
 done
 ok "$PACK_COUNT packs ($installed_audio audio files)"
 
-# Default active pack
+# Active pack — use the one chosen above (fresh install), else keep current
 if [ ! -f "$DEST/active-pack" ]; then
-  if [ -d "$DEST/packs/$DEFAULT_PACK" ]; then
+  if [ -n "$CHOSEN_PACK" ] && [ -d "$DEST/packs/$CHOSEN_PACK" ]; then
+    echo "$CHOSEN_PACK" > "$DEST/active-pack"
+  elif [ -d "$DEST/packs/$DEFAULT_PACK" ]; then
     echo "$DEFAULT_PACK" > "$DEST/active-pack"
   else
     ls "$DEST/packs" | head -1 > "$DEST/active-pack"
