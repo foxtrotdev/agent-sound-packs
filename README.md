@@ -7,165 +7,56 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
   <img alt="Platform: macOS / Linux / WSL" src="https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-lightgrey.svg">
-  <img alt="Shell: Bash" src="https://img.shields.io/badge/shell-bash-4EAA25.svg?logo=gnu-bash&logoColor=white">
-  <img alt="Audio: auto-detect" src="https://img.shields.io/badge/audio-afplay%20%7C%20pw--play%20%7C%20paplay%20%7C%20aplay%20%7C%20ffplay-orange.svg">
-  <img alt="Packs: 13" src="https://img.shields.io/badge/packs-13-success.svg">
+  <img alt="Packs: 14" src="https://img.shields.io/badge/packs-14-success.svg">
   <a href="https://claude.com/claude-code"><img alt="Claude Code" src="https://img.shields.io/badge/Claude_Code-supported-D97757.svg"></a>
   <a href="https://github.com/openai/codex"><img alt="Codex CLI" src="https://img.shields.io/badge/Codex_CLI-supported-10A37F.svg"></a>
-  <a href="https://github.com/Aider-AI/aider"><img alt="Aider" src="https://img.shields.io/badge/Aider-supported-7C3AED.svg"></a>
 </p>
 
-<p align="center">
-  <strong>Your AI coding agent talks back.</strong><br>
-  Themed sound packs that play short clips when your agent finishes a task, needs input, or hits other lifecycle events. Drop in any folder of <code>.wav</code> files, map each event to its own sound pool, switch themes in one command.
-</p>
-
-<p align="center">
-  Works with <a href="https://claude.com/claude-code">Claude Code</a> · <a href="https://github.com/openai/codex">Codex CLI</a> · <a href="https://github.com/Aider-AI/aider">Aider</a> · any agent CLI with a post-turn hook.
-</p>
+<p align="center"><strong>Your AI coding agent talks back.</strong></p>
 
 ---
 
-## Before you start
+## What it does
 
-You need:
+Your AI coding agent (Claude Code, Codex, …) plays a short sound when it finishes a
+reply, needs your input, or hits another moment in its work. Pick a theme — Mortal
+Kombat, Futurama, a Warcraft peon — and you *hear* what your agent is doing without
+watching the screen.
 
-- **A terminal.** Terminal.app on macOS, any terminal on Linux, **WSL** on Windows (see callout below — native PowerShell / cmd will not work).
-- **`git`** installed. (`git --version` in your terminal — if it errors, install from [git-scm.com](https://git-scm.com/downloads).)
-- **At least one supported agent CLI:** [Claude Code](https://claude.com/claude-code), [Codex CLI](https://github.com/openai/codex), or [Aider](https://github.com/Aider-AI/aider).
-- **Optional but recommended: `jq`** — used by the one-liner hook merge. Install:
-  - macOS: `brew install jq`
-  - Debian / Ubuntu / WSL: `sudo apt install -y jq`
-  - Fedora / RHEL: `sudo dnf install -y jq`
-  - Arch: `sudo pacman -S jq`
-  - Windows (inside WSL — see below): use the WSL line above.
+A **pack** is a theme: a folder of short audio clips. You can switch packs in one
+command, or make your own. 14 packs ship in the box.
 
-> **Windows users — read this first.** This project is a Bash toolkit. It runs in **WSL** (Windows Subsystem for Linux), not native PowerShell or cmd.
->
-> 1. Open PowerShell as administrator → `wsl --install` ([Microsoft docs](https://learn.microsoft.com/en-us/windows/wsl/install))
-> 2. Reboot, launch **Ubuntu** (or your installed WSL distro) from the Start menu.
-> 3. Inside WSL: `sudo apt update && sudo apt install -y git jq pulseaudio-utils`
-> 4. Continue with the Quickstart below **inside the WSL terminal**, not in PowerShell / cmd.
+Sounds fire on these moments (**events**):
 
-**Quick concept check** — three words that show up everywhere below:
+| Event | When it plays |
+|-------|---------------|
+| `stop` | The agent finished its reply |
+| `notification` | The agent needs you (a permission prompt, or it went idle) |
+| `subagent` | A background sub-task finished |
+| `session` | A new session started |
+| `compact` | The conversation is about to be summarized |
 
-- **pack** = a folder of `.wav` files plus a `pool.conf` that maps each event to its sounds.
-- **event** = a moment in the agent's lifecycle (`stop`, `notification`, `subagent`, `session`, `compact`).
-- **hook** = the shell command your agent runs when an event fires — that's what triggers a sound.
-
----
-
-## Quickstart (60 s — copy, paste, you're done)
-
-Open a terminal and run these in order. Works on macOS, Linux, and WSL.
-
-> **WSL users:** install inside the WSL filesystem (default: `~/.claude/sounds`). Do not install onto `/mnt/c/...` — drvfs strips the executable bit on shell scripts, so hooks will fail silently. Editing `pool.conf` in a Windows editor (Notepad / VS Code) is fine — the parser strips CRLF automatically.
-
-```bash
-# 1. Download the project
-git clone https://github.com/foxtrotdev/agent-sound-packs.git
-cd agent-sound-packs
-
-# 2. Install — copies scripts, configs, and bundled sounds to ~/.claude/sounds/
-./install.sh
-
-# 3. Confirm sound works on your system (you should hear 5 short clips)
-~/.claude/sounds/scripts/test-sounds.sh
-
-# 4. Pick which pack should be active
-~/.claude/sounds/switch-pack.sh mortal-kombat
-
-# 5. Tell Claude Code to use the hooks (one-liner if you have jq installed):
-jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
-  > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
-```
-
-**Don't have `jq`?** If your `~/.claude/settings.json` is empty / doesn't exist, just copy:
-```bash
-cp ~/.claude/sounds/suggested-hooks.json ~/.claude/settings.json
-```
-Otherwise open both files in your editor and paste the `"hooks"` block from `suggested-hooks.json` into your existing `settings.json`.
-
-That's it. The very next Claude Code reply will end with a sound. No restart needed.
-
-**Want more packs?** Browse with `~/.claude/sounds/scripts/list-remote.sh`, then install any with `~/.claude/sounds/scripts/add-pack.sh <name>`.
-
-Using a different agent? → [`docs/codex.md`](docs/codex.md) · [`docs/other-tools.md`](docs/other-tools.md).
-
----
-
-## In one breath
-
-Five canonical events (`stop` · `notification` · `subagent` · `session` · `compact`) fire randomized audio cues from the active pack. Two scripts, one config file per pack, no daemon, no runtime. Twelve example packs included (Mortal Kombat, Futurama, Ace Ventura, Commander Keen, DBZ, Looney Tunes, Pinky and The Brain, The Simpsons, Duke Nukem, CS Hostage, CoD Modern Warfare, Quake-style Killstreak Announcer); add your own in 30 seconds.
-
-> **Non-commercial fan project — no monetization.**
-> This is a hobbyist open-source utility. The maintainer earns nothing from it (no ads, no sponsorships, no paid tiers, no donation drives). The bundled audio packs are short clips from games, cartoons, and films, reused here solely as functional UI cues (~1-3 seconds each, played as system feedback for a developer tool — analogous to a notification chime). All copyrights remain with their original creators (Valve, Apogee/3D Realms, Activision, Midway/NetherRealm, 20th Century Fox/Disney, Warner Bros., id Software, and others); no ownership is claimed. Use is intended as fair use / non-commercial transformative use only.
->
-> **Are you a rightsholder and want a pack removed?** Open an issue (or email the maintainer); the pack will be pulled from the repo on first request, no questions asked.
->
-> **Forking for public redistribution?** Swap the bundled wavs for audio you own or have a license for. The system is content-agnostic — it only needs short `.wav` files and a `pool.conf`.
-
----
-
-## Table of contents
-
-- [Features](#features)
-- [Requirements](#requirements)
-- [Install](#install)
-- [Configuration](#configuration)
-- [Tool integrations](#tool-integrations)
-- [Event model](#event-model)
-- [Quick usage](#quick-usage)
-- [Pack management (install / update / browse)](#pack-management-install--update--browse)
-- [Adding a new pack](#adding-a-new-pack)
-- [Pack format](#pack-format)
-- [Switching packs](#switching-packs)
-- [Testing](#testing)
-- [Transcribing audio](#transcribing-audio)
-- [Architecture](#architecture)
-- [Adapting the player](#adapting-the-player)
-- [Troubleshooting](#troubleshooting)
-- [For agents / bots](#for-agents--bots)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
-## Features
-
-- **Tool-agnostic event model** — five canonical events, mapped per tool via thin adapters.
-- **Per-event sound pools** — each pack defines which sounds belong to which event.
-- **Random pick per fire** — variety across repeated events.
-- **Hot-swappable packs** — change theme in one command, no restart.
-- **Pluggable packs** — add a pack by dropping wavs in a directory with a `pool.conf` next to them.
-- **No-spam by design** — per-tool-call hooks deliberately not exposed.
-- **Transcribe helper** — bundled whisper.cpp wrapper to label a pack by what each clip actually says.
-
----
-
-## Requirements
-
-- **macOS, Linux, or WSL/Windows.** The player auto-detects the first available of: `afplay` (macOS), `pw-play` (PipeWire), `paplay` (PulseAudio), `aplay` (ALSA), `ffplay` (ffmpeg), `powershell.exe` (WSL → Windows host). Set `CCSP_PLAYER="my-tool"` to override.
-- Bash 3.2+ (works on stock macOS bash and any modern Linux).
-- At least one supported coding-agent CLI installed.
-- Optional: [whisper.cpp](https://github.com/ggerganov/whisper.cpp) for the transcribe helper.
+Each event picks a random clip from that pack, so it stays fresh.
 
 ---
 
 ## Install
 
-Two paths. Pick one.
+### Claude Code (recommended — no files to edit)
 
-### A) Claude Code plugin (one command, no settings.json editing)
+Type these two lines inside Claude Code:
 
 ```text
 /plugin marketplace add foxtrotdev/agent-sound-packs
 /plugin install agent-sound-packs@agent-sound-packs
 ```
 
-Hooks (Stop / Notification / SubagentStop / SessionStart / PreCompact) wire up automatically. Defaults to `mortal-kombat` pack. To change pack / volume / mute, create `~/.config/agent-sound-packs/config.json` — see [Configuration](#configuration). Pack-management scripts (`switch-pack.sh`, `add-pack.sh`) are not used in plugin mode; switching is done via the `pack` field in the config file.
+Done. Sounds wire up automatically and the next reply ends with one. Starts on the
+`mortal-kombat` pack — change it any time (see [Use it](#use-it)).
 
-### B) Standalone install (full pack-management toolkit)
+### Codex CLI
+
+Codex has no plugin system, so it uses a small installer + one config line.
 
 ```bash
 git clone https://github.com/foxtrotdev/agent-sound-packs.git
@@ -173,489 +64,136 @@ cd agent-sound-packs
 ./install.sh
 ```
 
-The installer:
+Then add this to `~/.codex/config.toml` (create the file if it doesn't exist),
+replacing `YOUR_USER` with your username:
 
-1. Copies `play-random.sh` and `switch-pack.sh` to `$CCSP_ROOT` (default `~/.claude/sounds`).
-2. Copies `transcribe.sh`, `test-sounds.sh`, and integration adapters to `$CCSP_ROOT/scripts/`.
-3. Copies pack definitions (`pool.conf`, `transcripts.txt`) **and bundled `.wav` files** into `$CCSP_ROOT/packs/<name>/`. Re-run with `--no-wavs` to refresh configs only.
-4. Initializes `$CCSP_ROOT/active-pack` (defaults to `mortal-kombat` when present).
-5. Writes `$CCSP_ROOT/suggested-hooks.json` — a ready-to-paste hooks block with your real install path already substituted in.
-6. **Does NOT** touch any tool's config file — wiring hooks is per-tool and per-user. See [Tool integrations](#tool-integrations).
-
-> The default install root is `~/.claude/sounds/` for historical reasons. Override with `CCSP_ROOT=/your/path ./install.sh` if you prefer an XDG-style location.
-
-To wire hooks into Claude Code in one shot:
-
-```bash
-jq -s '.[0] * .[1]' ~/.claude/settings.json ~/.claude/sounds/suggested-hooks.json \
-  > /tmp/cc.json && mv /tmp/cc.json ~/.claude/settings.json
+```toml
+notify = ["bash", "/Users/YOUR_USER/.claude/sounds/scripts/integrations/codex-notify.sh"]
 ```
 
-If your `~/.claude/settings.json` doesn't exist yet, just copy `~/.claude/sounds/suggested-hooks.json` to it.
+Restart Codex. You'll get a "task done" chime on each turn. (Codex only exposes the
+`stop` event — full details in [`docs/codex.md`](docs/codex.md).)
+
+### Other agents
+
+Aider, Cursor, Cline, or any CLI with a post-turn shell hook → [`docs/other-tools.md`](docs/other-tools.md).
+
+**Requirements:** macOS, Linux, or Windows via **WSL** (not PowerShell/cmd — it's a
+Bash toolkit). The player auto-detects on every platform; no audio setup needed on a
+standard machine.
 
 ---
 
-## Configuration
+## Use it
 
-Volume, mute, and pack selection live in a single JSON file:
-
-```text
-~/.config/agent-sound-packs/config.json
-```
-
-(`$XDG_CONFIG_HOME/agent-sound-packs/config.json` if `XDG_CONFIG_HOME` is set.)
-
-```json
-{
-  "enabled": 1,
-  "volume": 70,
-  "pack": "mortal-kombat"
-}
-```
-
-| Key | Type | Default | Effect |
-|-----|------|---------|--------|
-| `enabled` | `0` \| `1` | `1` | `0` mutes all sounds. |
-| `volume` | int `0`–`100` | `100` | Mapped per player: `afplay -v 0..1`, `pw-play --volume 0..1`, `paplay --volume 0..65536`, `ffplay -volume 0..100`. `aplay` and PowerShell `SoundPlayer` ignore volume (no flag exists). |
-| `pack` | string | (none) | Overrides `$CCSP_ROOT/active-pack`. Useful in plugin mode where the install dir is read-only. Only `[a-zA-Z0-9._-]` allowed — paths and shell metacharacters silently rejected. |
-
-### Environment variables (override config file)
-
-| Var | Equivalent |
-|-----|------------|
-| `CCSP_ENABLED=0` | mute |
-| `CCSP_VOLUME=50` | volume |
-| `CCSP_DEBOUNCE_MS=2000` | min ms between plays |
-| `CCSP_PLAYER="ffplay -nodisp -autoexit"` | force a specific player |
-| `CCSP_ROOT=/path` | install dir (plugin install sets this to `${CLAUDE_PLUGIN_ROOT}`) |
-
-Precedence: **env var > config file > built-in default**. The config file is parsed safely with `grep` (no `jq` or `source`) — only digits and a strict character class are accepted, so a hand-edited or corrupted config cannot execute code.
-
-### Quick recipes
-
-```bash
-# Mute for the current shell only
-CCSP_ENABLED=0 claude
-
-# Half volume permanently
-mkdir -p ~/.config/agent-sound-packs
-printf '{"enabled":1,"volume":50}\n' > ~/.config/agent-sound-packs/config.json
-
-# Switch pack without touching the install dir (plugin mode)
-printf '{"enabled":1,"volume":70,"pack":"futurama"}\n' \
-  > ~/.config/agent-sound-packs/config.json
-```
-
----
-
-## Tool integrations
-
-| Tool | Events supported | Setup guide |
-|------|------------------|-------------|
-| Claude Code | `stop`, `notification`, `subagent`, `session`, `compact` | [`docs/claude-code.md`](docs/claude-code.md) |
-| OpenAI Codex CLI | `stop` | [`docs/codex.md`](docs/codex.md) |
-| Aider, Cursor, Cline, generic | `stop` (via post-turn shell hook) | [`docs/other-tools.md`](docs/other-tools.md) |
-
-To add an integration, see [`CONTRIBUTING.md`](CONTRIBUTING.md#adding-a-new-tool-integration).
-
----
-
-## Event model
-
-Five canonical events. Each maps to whatever native hook the tool provides.
-
-| Event          | Meaning |
-|----------------|---------|
-| `stop`         | The agent finished a reply / turn |
-| `notification` | The agent needs your input (permission, idle wake) |
-| `subagent`     | A nested subagent / tool call completed |
-| `session`      | The agent CLI started a new session |
-| `compact`      | Conversation context is about to be auto-summarized |
-
-Tools that don't natively distinguish all five (e.g. Codex, Aider) get partial coverage — usually just `stop`. That's fine; missing events are silently no-ops.
-
-> **Note:** Codex CLI currently emits no event for permission/approval prompts, so those are silent. Claude Code fires `Notification` for permission prompts and idle waits → mapped to the `notification` pool. See [`docs/codex.md`](docs/codex.md) for the upstream gap.
-
-Intentionally **unmapped** across all tools:
-
-- Per-tool-call hooks (`PreToolUse` / `PostToolUse` in Claude Code) — fires dozens of times per turn, would be unbearable.
-- Prompt-submit hooks — redundant (you know you pressed enter).
-
----
-
-## Quick usage
-
-### From the shell
-
-```bash
-# Show active pack + list available
-~/.claude/sounds/switch-pack.sh
-
-# Switch active pack (plays a 'stop' test sound)
-~/.claude/sounds/switch-pack.sh <pack-name>
-
-# Manually fire any event
-~/.claude/sounds/play-random.sh stop
-~/.claude/sounds/play-random.sh notification
-
-# Play one sound from each event pool (sanity check)
-~/.claude/sounds/scripts/test-sounds.sh
-```
-
-### From inside an AI coding agent (slash commands)
-
-One command, `/sound-pack`, with subcommands — so you remember one verb, not four:
+Inside your agent, one slash command does everything:
 
 | Command | What it does |
 |---------|--------------|
-| `/sound-pack` (or `list`) | List packs + show active |
-| `/sound-pack switch <name>` | Switch to pack `<name>` |
-| `/sound-pack update [name\|--all]` | Refresh installed packs from source |
-| `/sound-pack test` | Play one clip from each event pool of active pack |
-| `/sound-pack new <name>` | Scaffold a new pack folder with a `pool.conf` template |
-| `/sound-pack add <name>` | Install a pack from the catalog / a git repo |
-| `/sound-pack remote` | Browse the official pack catalog |
-| `/sound-pack validate <name>` | Check a pack's `pool.conf` + wavs |
-| `/sound-pack help` | Show all subcommands |
+| `/sound-pack` | List packs + show the active one |
+| `/sound-pack switch <name>` | Switch theme |
+| `/sound-pack test` | Play one clip from each event |
+| `/sound-pack add <name>` | Install another pack from the catalog |
+| `/sound-pack remote` | Browse the catalog |
+| `/sound-pack new <name>` | Start your own pack |
+| `/sound-pack update [--all]` | Refresh installed packs |
+| `/sound-pack validate <name>` | Check a pack is well-formed |
 
-`/sound-pack <existing-pack-name>` still works as a shortcut for `switch`.
+> Slash commands need a one-time copy: Claude Code `examples/commands-claude/sound-pack.md` → `~/.claude/commands/`; Codex `examples/commands-codex/sound-pack.md` → `~/.codex/prompts/`.
 
-Install per agent:
-
-| Agent | Source dir | Install dir | Restart? |
-|-------|-----------|-------------|----------|
-| Claude Code | `examples/commands-claude/*.md` | `~/.claude/commands/` | no |
-| OpenAI Codex CLI | `examples/commands-codex/*.md` | `~/.codex/prompts/` | yes (restart session) |
-| Aider, Cursor, others | (no custom slash commands yet) | — | use shell aliases below |
-
-The slash command files are thin wrappers — they tell the agent to invoke the shell scripts.
-
-### From any shell (aliases — agent-independent)
-
-If your agent doesn't support custom slash commands, or you just like the terminal, source the alias file from your `~/.zshrc` or `~/.bashrc`:
+Prefer the terminal? The same actions are plain scripts (standalone/Codex install):
 
 ```bash
-echo 'source ~/.claude/sounds/scripts/aliases.sh' >> ~/.zshrc
-exec zsh
+~/.claude/sounds/switch-pack.sh                 # list / show active
+~/.claude/sounds/switch-pack.sh futurama        # switch theme
+~/.claude/sounds/scripts/test-sounds.sh         # play one of each event
+~/.claude/sounds/scripts/add-pack.sh dbz        # install another pack
 ```
 
-You get four commands that work in any terminal:
+Or source `~/.claude/sounds/scripts/aliases.sh` from your shell rc for `sp`, `sp-test`,
+`sp-play <event>`, `sp-new <name>`.
 
-| Alias | Equivalent |
-|-------|-----------|
-| `sp` | `switch-pack.sh` (list / switch) |
-| `sp-test` | `test-sounds.sh` |
-| `sp-new <name>` | `new-pack.sh` |
-| `sp-play <event>` | `play-random.sh <event>` |
+### Volume & mute
 
-Example: `sp futurama` switches pack, `sp-test` plays all events.
+Mute, set volume, or pin a pack in one small file —
+`~/.config/agent-sound-packs/config.json`:
+
+```json
+{ "enabled": 1, "volume": 70, "pack": "futurama" }
+```
+
+`enabled: 0` mutes. Or per-shell: `CCSP_ENABLED=0 claude`. Full options in
+[`docs/claude-code.md`](docs/claude-code.md).
 
 ---
 
-## Pack management (install / update / browse)
+## Make your own pack
 
-Three commands. Copy, paste, done. You only need `git` on your machine.
-
-### See what packs you can install
-
-```bash
-~/.claude/sounds/scripts/list-remote.sh
-```
-
-Prints a table of every pack in the official catalog (name, language, what kind of audio, how many clips, one-line description). No download happens.
-
-### Install a pack
+A pack is just a folder of clips plus a `pool.conf` that says which clip plays for which
+event. No coding required.
 
 ```bash
-~/.claude/sounds/scripts/add-pack.sh duke-nukem-cs
+~/.claude/sounds/scripts/new-pack.sh my-pack            # 1. scaffold the folder
+cp ~/Downloads/*.wav ~/.claude/sounds/packs/my-pack/    # 2. drop in your clips
+open ~/.claude/sounds/packs/my-pack/pool.conf           # 3. list clips per event
+~/.claude/sounds/switch-pack.sh my-pack                 # 4. use it
 ```
 
-Replace `duke-nukem-cs` with any name from the list above. The pack lands in `~/.claude/sounds/packs/<name>/` and is ready to switch to.
-
-**Want to use it right after install?**
-```bash
-~/.claude/sounds/switch-pack.sh duke-nukem-cs
-```
-
-**Install from someone else's repo (community pack):**
-```bash
-~/.claude/sounds/scripts/add-pack.sh https://github.com/alice/her-packs.git stranger-things
-```
-The URL is the git repo, the second word is the pack folder name inside it.
-
-The repo must contain the pack at `packs/<name>/` and follow this shape:
-
-```
-packs/
-└── stranger-things/
-    ├── pool.conf          ← required: maps events to wav files
-    ├── transcripts.txt    ← optional: what each clip says
-    ├── eleven-1.wav
-    ├── eleven-2.wav
-    ├── upside-down.wav
-    └── … more *.wav / *.mp3 / *.ogg / *.flac files
-```
-
-**Safety:** every community pack is validated *before* it's copied into your `~/.claude/sounds/packs/`. The installer rejects packs that contain:
-
-- Subdirectories, symlinks, or any file other than audio + `pool.conf` + `transcripts.txt`
-- Any `pool.conf` that uses shell metacharacters (`` ` ``, `$(...)`, `|`, `;`, `>`, `<`, etc.) — the player **never** `source`s `pool.conf`, only parses it as text
-- Files larger than 5 MiB each, or packs larger than 200 MiB total
-- Pack names containing slashes, spaces, or anything other than letters/digits/`_`/`-`
-
-Full spec for pack authors: [`PACK_RULES.md`](PACK_RULES.md). Run `~/.claude/sounds/scripts/validate-pack.sh path/to/pack` to check a pack against every rule before publishing.
-
-### Update packs
+`pool.conf` looks like this — leave a list empty for silence on that event:
 
 ```bash
-# Update one pack
-~/.claude/sounds/scripts/update-pack.sh duke-nukem-cs
-
-# Update everything you've installed
-~/.claude/sounds/scripts/update-pack.sh --all
-
-# Just check what's out of date — don't actually download anything
-~/.claude/sounds/scripts/update-pack.sh --check
+POOL_STOP=(done-1.wav done-2.wav)
+POOL_NOTIFICATION=(hey.wav)
+POOL_SUBAGENT=()
+POOL_SESSION=(hello.wav)
+POOL_COMPACT=(oh-no.wav)
 ```
 
-`update-pack.sh` remembers where each pack came from (official repo or a community one) and refreshes from the same place. If a pack is already up to date, it tells you and does nothing.
+Tips: keep clips 1–3 seconds; list several per event for variety. Full rules and how to
+publish a pack for others to `add-pack.sh`: [`PACK_RULES.md`](PACK_RULES.md).
 
-> **Packs without a `.source` file are skipped.** `install.sh` (this repo) and `add-pack.sh` both write `.source`, so bundled packs are updatable out of the box. If you installed the project from an older release (pre-`.source`) and `update-pack.sh --all` prints `No packs with .source file found`, re-run `./install.sh` once to backfill — or reinstall each pack individually with `add-pack.sh --force <name>`. Hand-rolled packs you wrote yourself (no `.source`) are deliberately left alone.
+---
+
+## More docs
+
+- [`docs/claude-code.md`](docs/claude-code.md) — Claude Code events, config, manual hook setup
+- [`docs/codex.md`](docs/codex.md) — Codex integration + the approval-prompt gap
+- [`docs/other-tools.md`](docs/other-tools.md) — Aider / Cursor / generic CLIs
+- [`PACK_RULES.md`](PACK_RULES.md) — pack format + safety rules
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) · [`AGENTS.md`](AGENTS.md) — contributing / conventions
 
 <details>
-<summary>How it works (skip unless curious)</summary>
+<summary>Where things install + how a sound fires</summary>
 
-- Uses `git sparse-checkout` so only the requested `packs/<name>/` folder is downloaded — never the full repo.
-- After download, `scripts/validate-pack.sh` checks the pack against [`PACK_RULES.md`](PACK_RULES.md): flat layout, allowed extensions only, no symlinks, size caps, strict `pool.conf` grammar (no shell metacharacters). A pack that fails is deleted; nothing lands in `~/.claude/sounds/packs/`.
-- Each installed pack carries a `.source` file with the repo URL, commit SHA, and install timestamp. `update-pack.sh` reads it to know where to re-fetch from.
-- `play-random.sh` **never** `source`s `pool.conf` — it parses it as plain text, extracting only safe basenames. Even if a pack slipped past the validator, malicious code in `pool.conf` would not execute.
-- `list-remote.sh` reads [`packs.json`](packs.json) from raw.githubusercontent.com (no GitHub login needed).
-- Publishing your own packs? Put them at `packs/<name>/` in any public git repo, make sure `validate-pack.sh` is happy with it, then tell users `add-pack.sh <your-git-url> <name>`. Optional: ship your own `packs.json` for catalog browsing.
+Everything lands in `$CCSP_ROOT` (default `~/.claude/sounds`): `play-random.sh` (called
+by the hook), `switch-pack.sh`, helper scripts under `scripts/`, and `packs/<name>/`.
+The active pack name is a one-line file, `active-pack`.
+
+On each event: the tool's hook runs `play-random.sh <event>` → it reads `active-pack` →
+opens that pack's `pool.conf` → picks a random clip from `POOL_<EVENT>` → plays it in the
+background. `pool.conf` is parsed as plain text (never executed), so a malformed or
+malicious pack can't run code. Community packs are validated before install (flat layout,
+audio only, no symlinks, size caps).
 </details>
 
 ---
 
-## Adding a new pack
+## Non-commercial fan project — no monetization
 
-The 60-second version:
+Hobbyist open-source utility. The maintainer earns nothing from it. Bundled clips are
+short excerpts from games, cartoons, and films, reused only as functional UI cues
+(~1–3 s each, like a notification chime). All copyrights stay with their original
+creators; no ownership claimed. Use is intended as fair use / non-commercial only.
 
-```bash
-# 1. Scaffold the pack folder + pool.conf template
-~/.claude/sounds/scripts/new-pack.sh my-pack
-
-# 2. Drop your .wav files into the new folder
-cp ~/Downloads/my-sounds/*.wav ~/.claude/sounds/packs/my-pack/
-
-# 3. Edit pool.conf — list filenames under each event
-open ~/.claude/sounds/packs/my-pack/pool.conf       # opens in default editor
-
-# 4. Activate the pack (plays a 'stop' sound to confirm)
-~/.claude/sounds/switch-pack.sh my-pack
-
-# 5. (Optional) Test all events
-~/.claude/sounds/scripts/test-sounds.sh
-```
-
-### Walked-through example
-
-Say you have three wav clips: `done.wav`, `hey.wav`, `oops.wav`. After step 1, your `pool.conf` looks like this — edit it to:
-
-```bash
-POOL_STOP=(
-  done.wav
-)
-
-POOL_NOTIFICATION=(
-  hey.wav
-)
-
-POOL_SUBAGENT=(
-  # leave empty — no sound for subagent events
-)
-
-POOL_SESSION=(
-  hey.wav
-)
-
-POOL_COMPACT=(
-  oops.wav
-)
-```
-
-That's it. Each event picks a random clip from its list. Empty list = silence for that event. Same clip can be listed under multiple events.
-
-### Tips for picking sounds
-
-- **Short is better.** 1–3 second clips. Long sounds delay your workflow.
-- **Match the mood to the event.** Victory clips for `stop`, attention-getters for `notification`, sad / mocking for `compact`.
-- **Multiple clips per event = variety.** Add 5–8 different "task done" sounds and you won't get bored.
-- **Don't fill in events you don't care about.** Empty pool = silent. Many users only wire up `stop` + `notification`.
-
-### Filename convention
-
-- Lowercase, kebab-case for multi-word names (`task-done.wav`, not `TaskDone.wav` or `task_done.wav`).
-- Names should describe what the clip actually says or sounds like — easier to curate `pool.conf` six months later.
-- No spaces, no special characters except `-`.
-
-Pack filenames are local to the pack — they don't need to match any other pack.
-
----
-
-## Pack format
-
-```
-packs/<pack-name>/
-├── pool.conf          # required — bash arrays defining per-event sound lists
-├── transcripts.txt    # optional — TSV of filename + spoken text, for curation reference
-└── *.wav              # the audio (gitignored — user provides)
-```
-
-### `pool.conf`
-
-A sourceable bash file declaring five arrays. Filenames are resolved relative to the pack folder. Empty array = silent for that event.
-
-```bash
-POOL_STOP=(victory.wav excellent.wav flawless.wav)
-POOL_NOTIFICATION=(come-here.wav hey.wav)
-POOL_SUBAGENT=(thumbs-up.wav)
-POOL_SESSION=(hello.wav)
-POOL_COMPACT=(oh-no.wav bummer.wav)
-```
-
-### File naming convention
-
-- Lowercase
-- Kebab-case for multi-word filenames (e.g. `come-on-then.wav`, not `Comeonthen.wav` or `come_on_then.wav`)
-- Numeric suffixes use a dash (e.g. `oof-1.wav`, `oof-2.wav`)
-- Extension `.wav` (other formats may work with afplay but aren't officially supported)
-
----
-
-## Switching packs
-
-Active pack name lives in `~/.claude/sounds/active-pack` (plain text, single line). `switch-pack.sh` writes this file and plays a `stop`-pool sound as confirmation.
-
-```bash
-echo "futurama" > ~/.claude/sounds/active-pack    # also valid
-```
-
-No restart needed — `play-random.sh` reads `active-pack` on every fire.
-
----
-
-## Testing
-
-```bash
-~/.claude/sounds/scripts/test-sounds.sh
-```
-
-Plays one random sound from each event pool of the active pack. Use after editing `pool.conf` or adding new wavs.
-
----
-
-## Transcribing audio
-
-When you have a pile of wavs with cryptic filenames, run:
-
-```bash
-brew install whisper-cpp
-mkdir -p ~/.cache/whisper
-curl -L -o ~/.cache/whisper/ggml-small.en.bin \
-  https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin
-
-~/.claude/sounds/scripts/transcribe.sh ~/.claude/sounds/packs/<your-pack>
-```
-
-Writes `transcripts.txt` next to the wavs (TSV: `filename<TAB>transcribed text`). Use this to curate `pool.conf` by what each clip actually says rather than what its filename claims.
-
----
-
-## Architecture
-
-```
-$CCSP_ROOT/                      ← install root (default ~/.claude/sounds)
-├── play-random.sh               ← event entrypoint called by tool hooks
-├── switch-pack.sh               ← CLI: change active pack
-├── active-pack                  ← plain text, single line = pack name
-├── scripts/
-│   ├── transcribe.sh            ← whisper.cpp helper
-│   ├── test-sounds.sh           ← play one from each pool
-│   └── integrations/
-│       └── codex-notify.sh      ← Codex CLI notify-hook adapter
-└── packs/
-    ├── <pack-name>/
-    │   ├── pool.conf
-    │   ├── transcripts.txt      (optional)
-    │   └── *.wav
-    └── ...
-```
-
-Data flow on each tool event:
-
-```
-Tool event (Claude Code Stop, Codex agent-turn-complete, ...)
-    ↓
-Tool config (settings.json hook / config.toml notify / ...)
-    ↓
-[adapter, if needed] → play-random.sh <event>
-    ↓
-read active-pack → resolve packs/<pack>/pool.conf
-    ↓
-source pool.conf → pick random element from POOL_<EVENT>
-    ↓
-afplay packs/<pack>/<picked>.wav &
-```
-
----
-
-## Adapting the player
-
-`play-random.sh` **auto-detects** the player at runtime — no edits required on a standard macOS, Linux, or WSL setup. Detection order:
-
-| Order | Tool | Installed by default on |
-|------:|------|-------------------------|
-| 1 | `afplay` | macOS |
-| 2 | `pw-play` | Linux distros with PipeWire |
-| 3 | `paplay` | Linux distros with PulseAudio |
-| 4 | `aplay` | Linux distros with ALSA |
-| 5 | `ffplay` | Any platform that has [ffmpeg](https://ffmpeg.org) — universal fallback |
-| 6 | `powershell.exe` | WSL → uses Windows host's `Media.SoundPlayer` |
-
-Override with `CCSP_PLAYER="mpv --really-quiet"` (or any command that takes a file path as the last argument). Pool format and folder layout stay identical across platforms.
-
----
-
-## Troubleshooting
-
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| No sound at all | Hook not registered, or path wrong | Check the tool's config; verify absolute path matches your install root |
-| Sound on some events but not others | Empty pool, or wav file missing | `cat packs/<pack>/pool.conf`; verify referenced wavs exist on disk |
-| Same sound every time | Pool has only one file | Add more wavs and list them in `pool.conf` |
-| `afplay: command not found` | Not on macOS | See [Adapting the player](#adapting-the-player) |
-| `Pack not found` | Typo, or `packs/<name>/` missing | `switch-pack.sh` (no args) lists available packs |
-| Hooks fire but the agent feels slow | Long sounds blocking | The trailing `&` on `afplay` should background it — verify it's there |
-| Codex doesn't trigger anything | `notify` config wrong, or Codex not restarted | Test the adapter directly (see `docs/codex.md#verifying`) |
-| Windows: `'./install.sh' is not recognized` or `bash: command not found` | Running in PowerShell / cmd instead of WSL | Install WSL first — see [Before you start](#before-you-start), then re-run inside the WSL terminal |
-| Windows / WSL: no sound, no error | PulseAudio missing in WSL | `sudo apt install -y pulseaudio-utils`, or override with `CCSP_PLAYER="powershell.exe -c (New-Object Media.SoundPlayer \"$1\").PlaySync()"` |
-| `jq: command not found` when merging hooks | `jq` not installed | Install: `brew install jq` (macOS) · `sudo apt install -y jq` (Debian/Ubuntu/WSL) · `sudo dnf install -y jq` (Fedora). Or paste the hooks block from `suggested-hooks.json` by hand |
-
----
-
-## For agents / bots
-
-If you are a coding agent extending this repo, read [`AGENTS.md`](AGENTS.md) — machine-readable conventions, invariants, extension points, and what NOT to change.
-
----
-
-## Contributing
-
-See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+**Rightsholder and want a pack removed?** Open an issue or email the maintainer — it's
+pulled on first request, no questions asked. **Forking to redistribute publicly?** Swap
+the bundled clips for audio you own; the system only needs short audio files and a
+`pool.conf`.
 
 ---
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
-
-Scripts and pack definitions are MIT-licensed. Audio files users place into pack folders remain under their original copyrights — `.gitignore` excludes them, and you should not commit copyrighted audio you don't have rights to redistribute.
+MIT — see [`LICENSE`](LICENSE). Scripts and pack definitions are MIT. Audio you place in
+pack folders stays under its original copyright (`.gitignore` excludes it; don't commit
+audio you can't redistribute).
