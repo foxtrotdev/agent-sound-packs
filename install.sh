@@ -155,7 +155,7 @@ printf '%s' "$PACK_LINES" | while IFS='|' read -r pname pn; do
   printf '      %s· %-22s%s %s%s files%s%s\n' "$D" "$pname" "$X" "$D" "$pn" "$X" "$mark"
 done
 printf '\n'
-warn "Does NOT edit ~/.claude/settings.json — you wire the hooks yourself (shown at the end)."
+warn "Does NOT touch ~/.claude/settings.json yet — a separate step wires the hooks (with a diff + backup + confirm)."
 rule
 
 # ---- confirm -----------------------------------------------------------------
@@ -194,10 +194,15 @@ cp "$SRC_DIR/scripts/play-random.sh" "$DEST/play-random.sh"
 cp "$SRC_DIR/scripts/switch-pack.sh" "$DEST/switch-pack.sh"
 cp "$SRC_DIR/scripts/transcribe.sh"  "$DEST/scripts/transcribe.sh"
 [ -f "$SRC_DIR/scripts/test-sounds.sh" ] && cp "$SRC_DIR/scripts/test-sounds.sh" "$DEST/scripts/test-sounds.sh"
-for s in sound.sh add-pack.sh update-pack.sh list-remote.sh validate-pack.sh new-pack.sh; do
+for s in sound.sh add-pack.sh update-pack.sh list-remote.sh validate-pack.sh new-pack.sh install-hooks.sh; do
   [ -f "$SRC_DIR/scripts/$s" ] && cp "$SRC_DIR/scripts/$s" "$DEST/scripts/$s"
 done
+if [ -f "$SRC_DIR/scripts/integrations/codex-notify.sh" ]; then
+  mkdir -p "$DEST/scripts/integrations"
+  cp "$SRC_DIR/scripts/integrations/codex-notify.sh" "$DEST/scripts/integrations/codex-notify.sh"
+fi
 chmod +x "$DEST/play-random.sh" "$DEST/switch-pack.sh" "$DEST"/scripts/*.sh
+[ -f "$DEST/scripts/integrations/codex-notify.sh" ] && chmod +x "$DEST/scripts/integrations/codex-notify.sh"
 ok "scripts installed"
 
 # Detect repo + commit so update-pack.sh can refresh bundled packs later.
@@ -282,16 +287,21 @@ fi
 # ---- next steps --------------------------------------------------------------
 head "Done ✓  Next steps"
 printf '  %s1.%s Hear it:        %s%s/scripts/sound.sh test%s\n' "$B" "$X" "$C" "$DEST" "$X"
-printf '  %s2.%s Wire the hooks into ~/.claude/settings.json:\n' "$B" "$X"
-if command -v jq >/dev/null 2>&1; then
-  printf '       %sjq -s '"'"'.[0] * .[1]'"'"' ~/.claude/settings.json %s > /tmp/cc.json \\%s\n' "$D" "$HOOKS_FILE" "$X"
-  printf '       %s  && mv /tmp/cc.json ~/.claude/settings.json%s\n' "$D" "$X"
-else
-  printf '       %s(no jq) paste the "hooks" block from %s into settings.json%s\n' "$D" "$HOOKS_FILE" "$X"
-fi
-printf '  %s3.%s Switch theme:   %s%s/scripts/sound.sh switch <name>%s   (browse: %ssound.sh remote%s)\n' "$B" "$X" "$C" "$DEST" "$X" "$C" "$X"
-printf '  %s4.%s Volume / mute:  %s%s/scripts/sound.sh volume 70%s | %smute%s | %sunmute%s\n' "$B" "$X" "$C" "$DEST" "$X" "$C" "$X" "$C" "$X"
+printf '  %s2.%s Wire the hooks:  %s%s/scripts/sound.sh install-hooks%s\n' "$B" "$X" "$C" "$DEST" "$X"
+printf '       %sshows a diff, backs up your config, asks before writing. Add %scodex%s or %sall%s for Codex.%s\n' "$D" "$C" "$D" "$C" "$D" "$X"
+printf '  %s3.%s Switch theme:    %s%s/scripts/sound.sh switch <name>%s   (browse: %ssound.sh remote%s)\n' "$B" "$X" "$C" "$DEST" "$X" "$C" "$X"
+printf '  %s4.%s Volume / mute:   %s%s/scripts/sound.sh volume 70%s | %smute%s | %sunmute%s\n' "$B" "$X" "$C" "$DEST" "$X" "$C" "$X" "$C" "$X"
 rule
+
+# ---- offer to wire hooks right now ------------------------------------------
+if [ "$ASSUME_YES" != 1 ] && [ -t 0 ] && [ -x "$DEST/scripts/install-hooks.sh" ]; then
+  printf '\n%sWire the hooks into ~/.claude/settings.json now?%s [%sY%s/n] ' "$B" "$X" "$G" "$X"
+  read -r wire || wire=""
+  case "$wire" in
+    n|N|no|NO|No) info "Skipped — run 'sound.sh install-hooks' whenever you're ready." ;;
+    *) CCSP_ROOT="$DEST" bash "$DEST/scripts/install-hooks.sh" claude || true ;;
+  esac
+fi
 
 # ---- first-run intro ---------------------------------------------------------
 if [ "$WANT_INTRO" = 1 ] && [ -t 1 ]; then

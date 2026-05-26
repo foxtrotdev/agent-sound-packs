@@ -22,18 +22,24 @@ Workarounds, none clean:
 
 ## Install
 
-1. Run the project installer:
+1. Run the project installer (copies scripts + the Codex adapter):
    ```bash
    ./install.sh
    ```
-2. Add the `notify` line to `~/.codex/config.toml`. Codex execs the program
-   directly (no shell), so the path must be absolute — TOML won't expand `$HOME`.
-   Let the shell fill it in for you instead of typing your username:
+2. Wire the `notify` line into `~/.codex/config.toml`:
+   ```bash
+   ~/.claude/sounds/scripts/sound.sh install-hooks codex
+   ```
+   This shows a diff of the exact change, backs up your existing
+   `config.toml` to a timestamped `.bak`, and asks before writing (default
+   Yes). It's idempotent — re-running replaces the `notify` line rather than
+   duplicating it. Add `--dry-run` to preview without writing.
+
+   Prefer doing it by hand? Codex execs the program directly (no shell), so the
+   path must be absolute — TOML won't expand `$HOME`. Let the shell fill it in:
    ```bash
    echo "notify = [\"bash\", \"$HOME/.claude/sounds/scripts/integrations/codex-notify.sh\"]" >> ~/.codex/config.toml
    ```
-   (`$HOME` expands at write time, so the file ends up with the real absolute
-   path. Already have a `notify =` line? Replace it instead of appending.)
 3. (Optional) Drop your `.wav` files into `~/.claude/sounds/packs/<pack-name>/`.
 4. Restart Codex CLI to pick up the new config.
 

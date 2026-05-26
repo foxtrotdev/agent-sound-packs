@@ -12,6 +12,8 @@
 #   add <name|git-url>      Install a pack from the catalog or a git repo.
 #   remote                  Browse the official pack catalog (nothing downloaded).
 #   validate <name>         Check a pack's pool.conf + wav files.
+#   install-hooks [target]  Wire hooks into your agent config (claude|codex|all).
+#                           Shows a diff, backs up, asks before writing.
 #   volume <0-100>          Set playback volume (writes config.json).
 #   mute | unmute           Silence / re-enable all sounds.
 #   help                    Show this help.
@@ -42,7 +44,7 @@ run() {
   CCSP_ROOT="$ROOT" bash "$s" "$@"
 }
 
-usage() { sed -n '2,19p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
+usage() { sed -n '2,21p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; }
 
 CFG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/agent-sound-packs/config.json"
 
@@ -75,6 +77,7 @@ case "$sub" in
   new|create)                  run new-pack.sh "$@" ;;
   add|install)                 run add-pack.sh "$@" ;;
   remote|catalog|available)    run list-remote.sh "$@" ;;
+  install-hooks|hooks|wire)    run install-hooks.sh "$@" ;;
   validate)
     # validate-pack.sh wants a directory path; accept a bare pack name too.
     if [ $# -ge 1 ] && [ -d "$PACKS_DIR/$1" ]; then
